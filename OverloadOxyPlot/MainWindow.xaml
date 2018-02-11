@@ -1,0 +1,163 @@
+﻿<Window x:Class="OverloadOxyPlot.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OverloadOxyPlot"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:converters="clr-namespace:OverloadOxyPlot.Converters"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="Auto" Width="Auto"
+        WindowState="Maximized"
+        FontSize="14" FontFamily="14">
+
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Height" Value="25"></Setter>
+            <Setter Property="Margin" Value="5"></Setter>
+            <Setter Property="Width" Value="50"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Height" Value="25"></Setter>
+            <Setter Property="Margin" Value="5"></Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+       <Grid.DataContext>
+           <local:MainViewModel></local:MainViewModel>
+       </Grid.DataContext>
+        <TabControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <TabItem Header="Данные">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <GroupBox Header="Константы">
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="Шаг по времени (сут.)"></TextBlock>
+                                <TextBlock Text="Шаг по энерговыработке"></TextBlock>
+                                <TextBlock Text="Прогноз (сут.)"></TextBlock>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical">
+                                <TextBox Text="{Binding Path=System.DeltaT, Mode=TwoWay}">
+                                    <i:Interaction.Behaviors>
+                                        <local:TextBoxInteraction/>
+                                    </i:Interaction.Behaviors>
+                                </TextBox>
+                                <TextBox Text="{Binding Path=System.DeltaE , Mode=TwoWay}">
+                                    <i:Interaction.Behaviors>
+                                        <local:TextBoxInteraction/>
+                                    </i:Interaction.Behaviors>
+                                </TextBox>
+                                <TextBox Text="{Binding Path=System.Tmax , Mode=TwoWay}">
+                                    <i:Interaction.Behaviors>
+                                        <local:TextBoxInteraction/>
+                                    </i:Interaction.Behaviors>
+                                </TextBox>
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+                    <Grid Grid.Column="1" Grid.Row="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <GroupBox Header="1 реактор" Grid.Row="0">
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="Начальная мощность ТВС"></TextBlock>
+                                    <TextBlock Text="Коэффициент выгорания"></TextBlock>
+                                    <TextBlock Text="Предельная энерговыработка в АЗ"></TextBlock>
+                                    <TextBlock Text="Степень выгрузки"></TextBlock>
+                                    <TextBlock Text="Уровень выгрузки"></TextBlock>
+                                    <TextBlock Text="Краевые условия"></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBox Text="{Binding Path=System.Reactor1.W0}"/>
+                                    <TextBox Text="{Binding Path=System.Reactor1.B}"/>
+                                    <TextBox Text="{Binding Path=System.Reactor1.Em}"/>
+                                    <TextBox Text="{Binding Path=System.Reactor1.Alpha}"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="От:"></TextBlock>
+                                        <TextBox Text="{Binding System.Reactor1.E1}"></TextBox>
+                                        <TextBlock Text="до:"></TextBlock>
+                                        <TextBox Text="{Binding System.Reactor1.E2}"></TextBox>
+                                    </StackPanel>
+                                    <ComboBox ItemsSource="{Binding Path = System.Reactor1.Boundary, Converter={converters:EnumToCollectionConverter}, Mode=OneTime}"
+                                              SelectedValuePath="Value" DisplayMemberPath="Description" SelectedValue="{Binding System.Reactor1.Boundary}">
+                                        
+                                    </ComboBox>
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="2 реактор" Grid.Row="1">
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="Начальная мощность ТВС"></TextBlock>
+                                    <TextBlock Text="Коэффициент выгорания"></TextBlock>
+                                    <TextBlock Text="Предельная энерговыработка в АЗ"></TextBlock>
+                                    <TextBlock Text="Степень выгрузки"></TextBlock>
+                                    <TextBlock Text="Уровень выгрузки"></TextBlock>
+                                    <TextBlock Text="Краевые условия"></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical">
+                                <TextBox Text="{Binding Path=System.Reactor2.W0}"/>
+                                <TextBox Text="{Binding Path=System.Reactor2.B}"/>
+                                <TextBox Text="{Binding Path=System.Reactor2.Em}"/>
+                                <TextBox Text="{Binding Path=System.Reactor2.Alpha}"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="От:"></TextBlock>
+                                    <TextBox Text="{Binding System.Reactor2.E1}"></TextBox>
+                                    <TextBlock Text="до:"></TextBlock>
+                                    <TextBox Text="{Binding System.Reactor2.E2}"></TextBox>
+                                </StackPanel>
+                                <ComboBox ItemsSource="{Binding Path = System.Reactor2.Boundary, Converter={converters:EnumToCollectionConverter}, Mode=OneTime}"
+                                              SelectedValuePath="Value" DisplayMemberPath="Description" SelectedValue="{Binding System.Reactor2.Boundary}">
+                                    </ComboBox>
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
+                    </Grid>
+                    <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                            Content="Рассчитать" Width="90" Command="{Binding CalculateCommand}"
+                            Cursor="{Binding Cursor, Mode=TwoWay}"></Button>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Графики">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <oxy:PlotView Width="1000" Grid.Row="0" Grid.Column="0"
+                                  Visibility="{Binding ElementName=Q,Path=IsChecked, Converter={converters:BoolToVisibilityConverter}}"
+                                  Model="{Binding PlotModelQ}"></oxy:PlotView>
+                    <oxy:PlotView Width="1000" Grid.Row="0" Grid.Column="0" 
+                                  Visibility="{Binding ElementName=N, Path=IsChecked, Converter={converters:BoolToVisibilityConverter}}"
+                                  Model="{Binding PlotModelN}"></oxy:PlotView>
+                    <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                        <Slider  Height="30" Width="1000" Minimum="0" Maximum="{Binding System.Tmax}"
+                                 Value="{Binding T, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Slider>
+                        <TextBlock Text="{Binding T, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1">
+                        <RadioButton x:Name="Q" Content="Поток" IsChecked="True"></RadioButton>
+                        <RadioButton x:Name="N" Content="Спектр"></RadioButton>
+                    </StackPanel>
+                    
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
