@@ -67,6 +67,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Model\IContainer.cs" />
     <Compile Include="Model\ReactorSystem.cs" />
     <Compile Include="TextBoxInteraction.cs" />
     <Page Include="MainWindow.xaml">

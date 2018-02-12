@@ -7,7 +7,7 @@ using OverloadOxyPlot.Annotations;
 
 namespace OverloadOxyPlot.Model
 {
-    public class Reactor: INotifyPropertyChanged
+    public class Reactor: IContainer, INotifyPropertyChanged
     {
         private BoundaryConditions _boundary;
         public double Em { get; set; }
@@ -22,6 +22,9 @@ namespace OverloadOxyPlot.Model
         public double Alpha { get; set; }
         public List<List<double>> QArray { get; set; } //результат прогноза для потока
         public List<List<double>> NArray { get; set; }
+        public List<double> CurrentQArray { get; set; }
+        public List<double> CurrentNArray { get; set; }
+        public double DeltaE { get; set; }
         public BoundaryConditions Boundary
         {
             get => _boundary;
@@ -111,6 +114,41 @@ namespace OverloadOxyPlot.Model
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        public void Insert(double assembliesCount, double energyLow, double energyHigh)
+        {
+            var j1 = (int)Math.Ceiling(energyLow / DeltaE);
+            var j2 = (int)Math.Ceiling(energyHigh / DeltaE);
+            double sum = 0;
+            for (int j = j1; j <= j2; j++)
+            {
+                sum += CurrentQArray[j] / (W0 - B * j * DeltaE) * DeltaE;
+            }
+            var alpha = assembliesCount / sum;
+            for (int j = j1; j <= j2; j++)
+            {
+                CurrentQArray[j] += alpha * CurrentQArray[j];
+            }
+        }
+
+        public double Remove(double assembliesCount, double energyLow, double energyHigh)
+        {
+            var j1 = (int)Math.Ceiling(energyLow / DeltaE);
+            var j2 = (int)Math.Ceiling(energyHigh / DeltaE);
+            double sum = 0;
+            for (int j = j1; j <= j2; j++)
+            {
+                sum += CurrentQArray[j] / (W0 - B * j * DeltaE) * DeltaE;
+            }
+            var alpha = assembliesCount / sum;
+            if (alpha > 1)
+                alpha = 1;
+            for (int j = j1; j <= j2; j++)
+            {
+                CurrentQArray[j] -= alpha * CurrentQArray[j];
+            }
+            return alpha * sum;
+        }
+
         public Reactor()
         {
             QArray = new List<List<double>>();
@@ -124,7 +162,7 @@ namespace OverloadOxyPlot.Model
             B = (W0 - wMin) / Em;
             Q0 = B * AssembliesCount / Math.Log(W0 / wMin);
             Boundary = BoundaryConditions.ConstFuelling;
-            Alpha = 0.1;
+            Alpha = 2;
             E1 = Em / 2 - 20;
             E2 = Em / 2 + 20;
             

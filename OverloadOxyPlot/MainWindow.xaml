@@ -75,7 +75,7 @@
                                     <TextBlock Text="Начальная мощность ТВС"></TextBlock>
                                     <TextBlock Text="Коэффициент выгорания"></TextBlock>
                                     <TextBlock Text="Предельная энерговыработка в АЗ"></TextBlock>
-                                    <TextBlock Text="Степень выгрузки"></TextBlock>
+                                    <TextBlock Text="Число выгружаемых ТВС"></TextBlock>
                                     <TextBlock Text="Уровень выгрузки"></TextBlock>
                                     <TextBlock Text="Краевые условия"></TextBlock>
                                 </StackPanel>
@@ -103,7 +103,7 @@
                                     <TextBlock Text="Начальная мощность ТВС"></TextBlock>
                                     <TextBlock Text="Коэффициент выгорания"></TextBlock>
                                     <TextBlock Text="Предельная энерговыработка в АЗ"></TextBlock>
-                                    <TextBlock Text="Степень выгрузки"></TextBlock>
+                                    <TextBlock Text="Число выгружаемых ТВС"></TextBlock>
                                     <TextBlock Text="Уровень выгрузки"></TextBlock>
                                     <TextBlock Text="Краевые условия"></TextBlock>
                                 </StackPanel>
@@ -140,13 +140,13 @@
                         <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <oxy:PlotView Width="1000" Grid.Row="0" Grid.Column="0"
+                    <oxy:PlotView Grid.Row="0" Grid.Column="0"
                                   Visibility="{Binding ElementName=Q,Path=IsChecked, Converter={converters:BoolToVisibilityConverter}}"
                                   Model="{Binding PlotModelQ}"></oxy:PlotView>
-                    <oxy:PlotView Width="1000" Grid.Row="0" Grid.Column="0" 
+                    <oxy:PlotView Grid.Row="0" Grid.Column="0" 
                                   Visibility="{Binding ElementName=N, Path=IsChecked, Converter={converters:BoolToVisibilityConverter}}"
                                   Model="{Binding PlotModelN}"></oxy:PlotView>
-                    <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                    <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
                         <Slider  Height="30" Width="1000" Minimum="0" Maximum="{Binding System.Tmax}"
                                  Value="{Binding T, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Slider>
                         <TextBlock Text="{Binding T, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto"/>
@@ -154,6 +154,30 @@
                     <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="1">
                         <RadioButton x:Name="Q" Content="Поток" IsChecked="True"></RadioButton>
                         <RadioButton x:Name="N" Content="Спектр"></RadioButton>
+                        <GroupBox  Header="1 реактор">
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="Число ТВС"></TextBlock>
+                                    <TextBlock Text="K_eff"></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBox Text="{Binding System.Reactor1.AssembliesCount, Mode=TwoWay}"></TextBox>
+                                    <TextBox Text="{Binding System.Reactor1.KAverage}"></TextBox>
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox  Header="2 реактор">
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="Число ТВС"></TextBlock>
+                                    <TextBlock Text="K_eff"></TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBox Text="{Binding System.Reactor2.AssembliesCount, Mode=TwoWay}"></TextBox>
+                                    <TextBox Text="{Binding System.Reactor2.KAverage}"></TextBox>
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
                     </StackPanel>
                     
                 </Grid>

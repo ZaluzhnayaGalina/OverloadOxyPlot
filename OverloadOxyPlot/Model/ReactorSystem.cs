@@ -81,33 +81,26 @@ namespace OverloadOxyPlot.Model
         }
         public void Calculate()
         {
-            var listAlphaReactor1 = new List<double>();
-            var listAlphaReactor2 = new List<double>();
-            for (int i = 0; i < _listE.Count; i++)
-            {
-                if (_listE[i] < Reactor1.E1 || _listE[i] > Reactor1.E2)
-                    listAlphaReactor1.Add(0);
-                else
-                {
-                    listAlphaReactor1.Add(Reactor1.Alpha);
-                }
-                if (_listE[i] < Reactor2.E1 || _listE[i] > Reactor2.E2)
-                    listAlphaReactor2.Add(0);
-                else
-                {
-                    listAlphaReactor2.Add(Reactor2.Alpha);
-                }
-            }
+            Reactor1.SetInitialCondition();
+            Reactor2.SetInitialCondition();
+            Reactor1.DeltaE = DeltaE;
+            Reactor2.DeltaE = DeltaE;
             for (int i = 0; i < Reactor1.QArray.Count - 1; i++)
             {
+                Reactor1.CurrentQArray = Reactor1.QArray[i];
+                Reactor2.CurrentQArray = Reactor2.QArray[i];
+                var n1 = Reactor1.Remove(Reactor1.Alpha, Reactor1.E1, Reactor1.E2);
+                Reactor2.Insert(n1, Reactor1.E1, Reactor1.E2);
+                var n2 = Reactor2.Remove(Reactor2.Alpha, Reactor2.E1, Reactor2.E2);
+                Reactor1.Insert(n2, Reactor2.E1, Reactor2.E2);
+                Reactor1.QArray[i] = Reactor1.CurrentQArray;
+                Reactor2.QArray[i] = Reactor2.CurrentQArray;
                 for (int j = 1; j < Reactor1.QArray[i].Count; j++)
                 {
-                    Reactor1.QArray[i + 1][j] = Reactor1.QArray[i][j] - (Reactor1.W0 - Reactor1.B * DeltaE * j) * DeltaT / DeltaE *
-                        (Reactor1.QArray[i][j] - Reactor1.QArray[i][j - 1]) +
-                        (listAlphaReactor2[j] * Reactor2.QArray[i][j] - listAlphaReactor1[j] * Reactor1.QArray[i][j]) * DeltaT;
-                    Reactor2.QArray[i + 1][j] = Reactor2.QArray[i][j] - (Reactor2.W0 - Reactor2.B * DeltaE * j) * DeltaT / DeltaE *
-                        (Reactor2.QArray[i][j] - Reactor2.QArray[i][j - 1]) +
-                        (listAlphaReactor1[j] * Reactor1.QArray[i][j] - listAlphaReactor2[j] * Reactor2.QArray[i][j]) * DeltaT;
+                    Reactor1.QArray[i + 1][j] = Reactor1.QArray[i][j] +
+                                                DeltaT / DeltaE * (-Reactor1.QArray[i][j] + Reactor1.QArray[i][j - 1]);
+                    Reactor2.QArray[i + 1][j] = Reactor2.QArray[i][j] +
+                                                DeltaT / DeltaE * (-Reactor2.QArray[i][j] + Reactor2.QArray[i][j - 1]);
                 }
             }
             for (int i = 0; i < Reactor1.QArray.Count; i++)
