@@ -10,22 +10,26 @@ namespace OverloadOxyPlot.Model
         /// <summary>
         ///  Спектр ТВС
         ///  </summary>
-        List<List<double>> NArray { get; set; }
+        List<double> NArray { get; set; }
         /// <summary>
         /// Вставка ТВС
         /// </summary>
-        /// <param name="assembliesCount"> Число новых ТВС</param>
-        /// <param name="energyLow">Нижняя граница энерговыработок новых ТВС</param>
-        /// <param name="energyHigh">Верхняя граница новых ТВС</param>
-        void Insert(double assembliesCount, double energyLow, double energyHigh);
+        /// <param name="assemblies"> Число новых ТВС</param>
+        void Insert(Assemblies assemblies);
         /// <summary>
         /// Извлечение ТВС
         /// </summary>
-        /// <param name="assembliesCount">Число извлекаемых ТВС</param>
-        /// <param name="energyLow"> Нижняя граница энерговыработок извлекаемых ТВС</param>
-        /// <param name="energyHigh"> Верхняя граница энерговыработок извлекаемых ТВС</param>
+        /// <param name="assemblies">Число извлекаемых ТВС</param>
         /// <returns>Число извлеченных ТВС</returns>
-        double Remove(double assembliesCount, double energyLow, double energyHigh);
-        }
-    
+        Assemblies Remove(Assemblies assemblies);
+        /// <summary>
+        /// Шаг по энерговыработкам
+        /// </summary>
+        /// 
+        double DeltaE { get; set; }
+        double DeltaT { get; set; }
+        List<List<double>> Protocol { get; set; }
+        double AssembliesCount { get; }
+
+    }   
 }

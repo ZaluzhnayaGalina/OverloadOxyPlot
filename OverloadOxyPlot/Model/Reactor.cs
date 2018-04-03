@@ -7,105 +7,35 @@ using OverloadOxyPlot.Annotations;
 
 namespace OverloadOxyPlot.Model
 {
-    public class Reactor: IContainer, INotifyPropertyChanged
+    public class BurningReactor : IReactor, INotifyPropertyChanged
     {
-        private BoundaryConditions _boundary;
         public double Em { get; set; }
-        public double W0 { get; set; }
-        public double B { get; set; }
-        public double Q0 { get; set; }
-        public double AssembliesCount { get; set; }
-        public double KAverage { get; set; }
-        public double K0 { get; set; }
-        public double E1 { get; set; }
-        public double E2 { get; set; }
-        public double Alpha { get; set; }
-        public List<List<double>> QArray { get; set; } //результат прогноза для потока
-        public List<List<double>> NArray { get; set; }
-        public List<double> CurrentQArray { get; set; }
-        public List<double> CurrentNArray { get; set; }
-        public double DeltaE { get; set; }
-        public BoundaryConditions Boundary
+        private double _eAverage;
+
+        public double EAverage
         {
-            get => _boundary;
+            get => _eAverage;
             set
             {
-                if (_boundary == value)
+                if (Math.Abs(value - _eAverage) < 0.001)
                     return;
-                _boundary = value;
-                SetInitialCondition();
+                _eAverage = value;
                 OnPropertyChanged();
             }
         }
 
-        public void SetInitialCondition()
-        {
-            if (_boundary == BoundaryConditions.ConstFuelling)
-            {
-                foreach (var qt in QArray)
-                {
-                    qt[0] = Q0;
-                }
-            }
-            if (_boundary == BoundaryConditions.NoFuelling)
-                foreach (var qt in QArray)
-                {
-                    qt[0] = 0;
-                }
-            for (int i=0; i<QArray[0].Count; i++)
-            {
-                QArray[0][i] = Q0;
-            }
-            for (int i = 1; i < QArray.Count; i++)
-                for (int j = 1; j < QArray[i].Count; j++)
-                    QArray[i][j] = 0;
-        }
+        public double W0 { get; set; }
+        public double B { get; set; }
+        public double Q0 { get; set; }
+        public double AssembliesCount => NArray.Sum() * DeltaE;
+        public List<double> QArray { get; set; }
+        public List<double> NArray { get; set; }
+        public double DeltaE { get; set; }
+        public double KAverage { get; set; }
+        public double K0 { get; set; }
+        public double DeltaT { get; set; }
+        public List<List<double>> Protocol { get; set; }
 
-        public void ResizeT(int newCount)
-        {
-            if (newCount < QArray.Count)
-            {
-                QArray.RemoveRange(newCount, QArray.Count - newCount);
-                NArray.RemoveRange(newCount, QArray.Count - newCount);
-            }
-            else
-            {
-                for (int i = QArray.Count; i < newCount; i++)
-                {
-                    QArray.Add(new List<double>());
-                    NArray.Add(new List<double>());
-                    for (int j = 0; j < QArray[0].Count; j++)
-                    {
-                        QArray.Last().Add(0);
-                        NArray.Last().Add(0);
-                    }
-                }
-            }
-        }
-
-        public void ResizeE(int newCount)
-        {
-            if (newCount < QArray[0].Count)
-            {
-                for (int i = 0; i < QArray.Count; i++)
-                {
-                    QArray[i].RemoveRange(newCount, QArray[i].Count-newCount);
-                    NArray[i].RemoveRange(newCount, QArray[i].Count - newCount);
-                }
-            }
-            else
-            {
-                for (int i = 0; i < QArray.Count; i++)
-                {
-                    for (int j = QArray[i].Count; j < newCount; j++)
-                    {
-                        QArray[i].Add(0);
-                        NArray[i].Add(0);
-                    }
-                }
-            }
-           // SetInitialCondition();
-        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
@@ -114,45 +44,166 @@ namespace OverloadOxyPlot.Model
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public void Insert(double assembliesCount, double energyLow, double energyHigh)
+        public void Insert(Assemblies assemblies)
         {
-            var j1 = (int)Math.Ceiling(energyLow / DeltaE);
-            var j2 = (int)Math.Ceiling(energyHigh / DeltaE);
+            var j1 = (int) Math.Ceiling(assemblies.E1 / DeltaE);
+            var j2 = (int) Math.Ceiling(assemblies.E2 / DeltaE);
             double sum = 0;
             for (int j = j1; j <= j2; j++)
             {
-                sum += CurrentQArray[j] / (W0 - B * j * DeltaE) * DeltaE;
+                sum += NArray[j];
             }
-            var alpha = assembliesCount / sum;
+            sum = sum * DeltaE;
+            var alpha = assemblies.Count / sum;
             for (int j = j1; j <= j2; j++)
             {
-                CurrentQArray[j] += alpha * CurrentQArray[j];
+                NArray[j] += alpha * NArray[j];
             }
+            Protocol.Add(NArray);
         }
 
-        public double Remove(double assembliesCount, double energyLow, double energyHigh)
+        public Assemblies Remove(Assemblies assemblies)
         {
-            var j1 = (int)Math.Ceiling(energyLow / DeltaE);
-            var j2 = (int)Math.Ceiling(energyHigh / DeltaE);
+            var j1 = (int) Math.Ceiling(assemblies.E1 / DeltaE);
+            var j2 = (int) Math.Ceiling(assemblies.E2 / DeltaE);
             double sum = 0;
             for (int j = j1; j <= j2; j++)
             {
-                sum += CurrentQArray[j] / (W0 - B * j * DeltaE) * DeltaE;
+                sum += NArray[j] * DeltaE;
             }
-            var alpha = assembliesCount / sum;
+            var alpha = assemblies.Count / sum; //TODO; а что если там нет ТВС и сумма = 0?
             if (alpha > 1)
                 alpha = 1;
             for (int j = j1; j <= j2; j++)
             {
-                CurrentQArray[j] -= alpha * CurrentQArray[j];
+                NArray[j] -= alpha * NArray[j];
             }
-            return alpha * sum;
+            Protocol.Add(NArray);
+            return new Assemblies {Count = alpha * sum, E1 = assemblies.E1, E2 = assemblies.E2};
+
         }
 
-        public Reactor()
+        public BurningReactor()
         {
-            QArray = new List<List<double>>();
-            NArray = new List<List<double>>();
+            DeltaE = 1;
+            DeltaT = 0.1;
+            QArray = new List<double>();
+            Protocol = new List<List<double>>();
+            NArray = new List<double>();
+            //AssembliesCount = 1600;
+            Em = 2800;
+            W0 = 3;
+            KAverage = 1.02;
+            K0 = 1.2;
+            const double wMin = 1.5;
+            B = (W0 - wMin) / Em;
+            Q0 = B * 1600.0 / Math.Log(W0 / wMin);
+            for (int i = 0; i < Em / DeltaE; i++)
+            {
+                NArray.Add(Q0 / (W0 - B * DeltaE * i));
+            }
+            Protocol.Add(NArray);
+
+        }
+
+        public void CountAssemblies()
+        {
+            //double sum = NArray.Sum();
+            //AssembliesCount = sum * DeltaE;
+        }
+
+        public void CalcEAverage()
+        {
+            double sum = 0;
+            for (int j = 0; j < NArray.Count; j++)
+            {
+                sum += NArray[j] * j;
+            }
+            EAverage = sum * DeltaE;
+
+        }
+
+        public void Burn()
+        {
+            var prev = Protocol.Last();
+            int nArrayCount = NArray.Count;
+            NArray = new List<double> {Q0 / W0};
+            for (int j = 1; j < nArrayCount; j++)
+            {
+                var n = prev[j] + DeltaT * ((W0 - B * j * DeltaE) / DeltaE * (-prev[j] + prev[j - 1]) + B * prev[j]);
+                NArray.Add(n);
+            }
+            Protocol.Add(NArray);
+        }
+    }
+
+    public class StoppedReactor : IReactor, INotifyPropertyChanged
+    {
+        public List<double> NArray { get; set; }
+
+
+        public void Insert(Assemblies assemblies)
+        {
+            var j1 = (int)Math.Ceiling(assemblies.E1 / DeltaE);
+            var j2 = (int)Math.Ceiling(assemblies.E2 / DeltaE);
+            double sum = 0;
+            for (int j = j1; j <= j2; j++)
+            {
+                sum += NArray[j];
+            }
+            sum = sum * DeltaE;
+            var alpha = assemblies.Count / sum;
+            for (int j = j1; j <= j2; j++)
+            {
+                NArray[j] += alpha * NArray[j];
+            }
+            Protocol.Add(NArray);
+        }
+
+        public Assemblies Remove(Assemblies assemblies)
+        {
+            var j1 = (int)Math.Ceiling(assemblies.E1 / DeltaE);
+            var j2 = (int)Math.Ceiling(assemblies.E2 / DeltaE);
+            double sum = 0;
+            for (int j = j1; j <= j2; j++)
+            {
+                sum += NArray[j] * DeltaE;
+            }
+            var alpha = assemblies.Count / sum; //TODO; а что если там нет ТВС и сумма = 0?
+            if (alpha > 1)
+                alpha = 1;
+            for (int j = j1; j <= j2; j++)
+            {
+                NArray[j] -= alpha * NArray[j];
+            }
+            Protocol.Add(NArray);
+            return new Assemblies { Count = alpha * sum, E1 = assemblies.E1, E2 = assemblies.E2 };
+
+        }
+
+        public double Em { get; set; }
+        public double DeltaE { get; set; }
+        public double DeltaT { get; set; }
+        public List<List<double>> Protocol { get; set; }
+
+        public double W0 { get; set; }
+        public double B { get; set; }
+        public double Q0 { get; set; }
+        public double AssembliesCount { get; set; }
+        public double KAverage { get; set; }
+        public double K0 { get; set; }
+        public List<double> QArray { get; set; }
+
+        public void Burn()
+        {
+        }
+        public StoppedReactor()
+        {
+            DeltaE = 1;
+            DeltaT = 0.1;
+            QArray = new List<double>();
+            Protocol = new List<List<double>>();
+            NArray = new List<double>();
             AssembliesCount = 1600;
             Em = 2800;
             W0 = 3;
@@ -161,19 +212,62 @@ namespace OverloadOxyPlot.Model
             const double wMin = 1.5;
             B = (W0 - wMin) / Em;
             Q0 = B * AssembliesCount / Math.Log(W0 / wMin);
-            Boundary = BoundaryConditions.ConstFuelling;
-            Alpha = 2;
-            E1 = Em / 2 - 20;
-            E2 = Em / 2 + 20;
-            
-
+            for (int i = 0; i < Em / DeltaE; i++)
+            {
+                NArray.Add(Q0 / (W0 - B * DeltaE * i));
+            }
+            Protocol.Add(NArray);
         }
+        public event PropertyChangedEventHandler PropertyChanged;
     }
-    public enum BoundaryConditions
+    public class Assemblies : INotifyPropertyChanged
     {
-        [Description("Постоянная подпитка")]
-        ConstFuelling=0,
-        [Description("Нет подпитки")]
-        NoFuelling=1
+        private double _count;
+        private double _e1;
+        private double _e2;
+
+        public double Count
+        {
+            get => _count;
+            set
+            {
+                if (Math.Abs(_count - value) < 0.001)
+                    return;
+                _count = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double E1
+        {
+            get => _e1;
+            set
+            {
+                if (Math.Abs(_e1 - value) < 0.001)
+                    return;
+                _e1 = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double E2
+        {
+            get => _e2;
+            set
+            {
+                if (Math.Abs(_e2 - value) < 0.001)
+                    return;
+                _e2 = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }
