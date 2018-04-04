@@ -9,16 +9,43 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="Auto" Width="Auto"
         WindowState="Maximized"
+        Background="#EDE7F6"
         FontSize="14" FontFamily="14">
+    
     <Window.Resources>
         <Style TargetType="TextBox">
             <Setter Property="Height" Value="25"></Setter>
             <Setter Property="Margin" Value="5"></Setter>
             <Setter Property="Width" Value="50"/>
+            <Setter Property="Background" Value="#EDE7F6"></Setter>
         </Style>
         <Style TargetType="TextBlock">
             <Setter Property="Height" Value="25"></Setter>
             <Setter Property="Margin" Value="5"></Setter>
+            <Setter Property="Background" Value="#EDE7F6"></Setter>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="10"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="#B39DDB" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#B39DDB"></Setter>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="False">
+                    <Setter Property="Background" Value="#D1C4E9"></Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="oxy:Plot">
+            <Setter Property="Background" Value="#EDE7F6"></Setter>
         </Style>
     </Window.Resources>
     <Grid>
@@ -35,72 +62,89 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid  Grid.Row="0" Grid.Column="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
             <oxy:Plot Title="Остановленный реактор">
                 <oxy:Plot.Series>
                     <oxy:LineSeries ItemsSource="{Binding Points2}"/>
                 </oxy:Plot.Series>
                 <oxy:Plot.Axes>
-                    <oxy:LinearAxis Minimum="0">
-                        
-                    </oxy:LinearAxis>
+                    <oxy:LinearAxis Minimum="0"/>
                 </oxy:Plot.Axes>
             </oxy:Plot>
-            <StackPanel VerticalAlignment="Center" Orientation="Vertical" Grid.Column="1">
-                <Button Content="Извлечь" Command="{Binding RemoveCommand}"/>
+            <StackPanel VerticalAlignment="Center" Orientation="Vertical" Grid.Row="1">
+                <Button Content="Извлечь" Command="{Binding StoppedReactorRemoveCommand}"/>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="E1: "/>
-                    <TextBox Text="{Binding AssembliesToRemove.E1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <TextBlock Text="E2:"/>
-                    <TextBox Text="{Binding AssembliesToRemove.E2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <TextBlock Text="n:"/>
-                    <TextBox Text="{Binding AssembliesToRemove.Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Text=" E1: "/>
+                    <TextBox Text="{Binding StoppedReactorAssemblies.E1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Text=" E2:"/>
+                    <TextBox Text="{Binding StoppedReactorAssemblies.E2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Text=" n:"/>
+                    <TextBox Text="{Binding StoppedReactorAssemblies.Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
-                <Button Content="Вставить" Command="{Binding InsertCommand}"/>
+                <Button Content="Вставить" Command="{Binding StoppedReactorInsertCommand}"/>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="0" Grid.Column="1">
-            <StackPanel Orientation="Vertical">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Vertical" Grid.Row="0" MinWidth="300">
                 <Label Content="Хранилище"></Label>
-                <ListView ItemsSource="{Binding AssembliesList, Mode=TwoWay}" SelectedItem="{Binding Assemblies}" SelectionMode="Single">
+                <ListView ItemsSource="{Binding AssembliesList, Mode=TwoWay}"
+                          SelectedItem="{Binding Assemblies}" SelectionMode="Single" Background="#EDE7F6">
                     <ListView.ItemTemplate>
                         <DataTemplate DataType="model:Assemblies">
                             <StackPanel Orientation="Horizontal">
+                                <StackPanel.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Height" Value="25"></Setter>
+                                        <Setter Property="Margin" Value="5"></Setter>
+                                        <Setter Property="Background" Value="#EDE7F6"></Setter>
+                                    </Style>
+                                </StackPanel.Resources>
                                 <TextBlock Text="E1: "/>
-                                <TextBox Text="{Binding E1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Text="{Binding E1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                 <TextBlock Text="E2:"/>
-                                <TextBox Text="{Binding E2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Text="{Binding E2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                 <TextBlock Text="n:"/>
-                                <TextBox Text="{Binding Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Text="{Binding Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-            </StackPanel>
-            
+            </StackPanel>            
             </Grid>
         <Grid Grid.Row="0" Grid.Column="2" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
             <oxy:Plot  Title="Работающий реактор">
                 <oxy:Plot.Series>
                     <oxy:LineSeries ItemsSource="{Binding Points}"/>
                 </oxy:Plot.Series>
+                <oxy:Plot.Axes>
+                    <oxy:LinearAxis Minimum="0"/>
+                </oxy:Plot.Axes>
             </oxy:Plot>
-            <StackPanel VerticalAlignment="Center" Orientation="Vertical" Grid.Column="1">
+            <StackPanel VerticalAlignment="Center" Orientation="Vertical" Grid.Row="1">
                 <Button Content="Извлечь" Command="{Binding RemoveCommand}"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="E1: "/>
+                    <TextBox Text="{Binding BurningReactorAssemblies.E1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Text="E2:"/>
+                    <TextBox Text="{Binding BurningReactorAssemblies.E2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Text="n:"/>
+                    <TextBox Text="{Binding BurningReactorAssemblies.Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
                 <Button Content="Вставить" Command="{Binding InsertCommand}"/>
             </StackPanel>
         </Grid>
-        
-        <StackPanel Orientation="Horizontal"  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
-            <Button Content="Сутки" Command="{Binding BurnCommand}"/>
-        </StackPanel>
-        
+        <Button Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Content="Сутки" Command="{Binding BurnCommand}"/>
+
     </Grid>
 </Window>

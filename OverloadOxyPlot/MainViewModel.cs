@@ -13,21 +13,39 @@ namespace OverloadOxyPlot
         private IList<DataPoint> _points;
         public IList<Assemblies> AssembliesList { get; set; }
         public Assemblies Assemblies { get; set; }
-        public Assemblies AssembliesToRemove { get; set; }
+
+        public Assemblies StoppedReactorAssemblies { get; set; }
+        public Assemblies BurningReactorAssemblies { get; set; }
         private IList<DataPoint> _points2;
         private ICommand _burnCommand;
         private ICommand _removeCommand;
         private ICommand _insertCommand;
+        private ICommand _stoppedReactorRemoveCommand;
+        private ICommand _stoppedReactorInsertCommand;
         public IReactor Reactor { get; set; }
         public IReactor StoppedReactor { get; set; }
+        public ICommand StoppedReactorRemoveCommand => _stoppedReactorRemoveCommand ?? (_stoppedReactorRemoveCommand = new BaseCommand(StoppedReactorRemove));
+        public ICommand StoppedReactorInsertCommand => _stoppedReactorInsertCommand ?? (_stoppedReactorInsertCommand = new BaseCommand(StoppedReactorInsert));
+
+        private void StoppedReactorInsert(object obj)
+        {
+            StoppedReactor.Insert(Assemblies);
+            AssembliesList.Remove(Assemblies);
+            GetReactorPoints(StoppedReactor, Points2);
+        }
+
+        private void StoppedReactorRemove(object obj)
+        {
+            AssembliesList.Add(StoppedReactor.Remove(StoppedReactorAssemblies));
+            GetReactorPoints(StoppedReactor, Points2);
+        }
 
         public ICommand RemoveCommand => _removeCommand ?? (_removeCommand = new BaseCommand(Remove));
 
         private void Remove(object obj)
         {
-            AssembliesList.Add(StoppedReactor.Remove(AssembliesToRemove));
-
-            GetReactorPoints(StoppedReactor,Points2);
+            AssembliesList.Add(Reactor.Remove(BurningReactorAssemblies));
+            GetReactorPoints(Reactor,Points);
         }
 
         public ICommand InsertCommand => _insertCommand ?? (_insertCommand = new BaseCommand(Insert));
@@ -70,6 +88,7 @@ namespace OverloadOxyPlot
                 Reactor.Burn();
                 StoppedReactor.Burn();
             }
+            //((BurningReactor)Reactor).Fuel();
             GetReactorPoints(Reactor,Points);
             GetReactorPoints(StoppedReactor,Points2);
         }
@@ -91,7 +110,8 @@ namespace OverloadOxyPlot
             GetReactorPoints(Reactor, Points);
             GetReactorPoints(StoppedReactor, Points2);
             AssembliesList = new ObservableCollection<Assemblies>();
-            AssembliesToRemove = new Assemblies();
+            StoppedReactorAssemblies = new Assemblies(1.0, 400.0,500.0);
+            BurningReactorAssemblies = new Assemblies(2.0, 2000.0, 2500.0);
             Assemblies = new Assemblies();
         }
     }
