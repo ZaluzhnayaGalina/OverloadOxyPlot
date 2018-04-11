@@ -92,11 +92,13 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <StackPanel Orientation="Vertical" Grid.Row="0" MinWidth="300">
+            <StackPanel Orientation="Vertical" Grid.Row="0" MinWidth="200">
                 <Label Content="Хранилище"></Label>
-                <ListView ItemsSource="{Binding AssembliesList, Mode=TwoWay}"
+                <ScrollViewer >
+                    <ListView ItemsSource="{Binding AssembliesList, Mode=TwoWay}"
+                              ScrollViewer.VerticalScrollBarVisibility="Visible"
                           SelectedItem="{Binding Assemblies}" SelectionMode="Single" Background="#EDE7F6">
-                    <ListView.ItemTemplate>
+                        <ListView.ItemTemplate>
                         <DataTemplate DataType="model:Assemblies">
                             <StackPanel Orientation="Horizontal">
                                 <StackPanel.Resources>
@@ -115,7 +117,8 @@
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
-                </ListView>
+                    </ListView>
+                </ScrollViewer>
             </StackPanel>            
             </Grid>
         <Grid Grid.Row="0" Grid.Column="2" >
