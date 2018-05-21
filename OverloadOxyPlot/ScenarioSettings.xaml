@@ -1,0 +1,34 @@
+﻿<Window x:Class="OverloadOxyPlot.ScenarioSettings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OverloadOxyPlot"
+        mc:Ignorable="d"
+        Title="ScenarioSettings" Height="195" Width="484">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.Row="0">
+            <StackPanel Orientation="Vertical" Margin="10">
+                <TextBlock Text="Диапазон энерговыработок извлекаемых ТВС"/>
+                <TextBlock Text=" Число извлекаемых ТВС в сутки"/>
+                <TextBlock Text="Продолжительность"/>
+                <TextBlock Text="Направление"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Margin="10">
+                <TextBox Text="{Binding Path=DeltaE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Text="{Binding Path=Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Text="{Binding Path=Days, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <ComboBox SelectedIndex="{Binding Path=SelectedWay}">
+                    <ComboBoxItem>От минимума к максимуму</ComboBoxItem>
+                    <ComboBoxItem>От максимума к минимуму</ComboBoxItem>
+                    <ComboBoxItem>Попеременно</ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
+        </StackPanel>
+        <Button Content="Ok" Grid.Row="1" Command="{Binding Path=CloseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" IsEnabled="True"/>
+    </Grid>
+</Window>

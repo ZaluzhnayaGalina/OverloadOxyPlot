@@ -10,7 +10,7 @@ namespace OverloadOxyPlot.Model
 
         double KAverage { get; set; }
         double K0 { get; set; }
-        
+        double Mef { get; set; }
         List<double> QArray { get; set; }
         void Burn();
         
