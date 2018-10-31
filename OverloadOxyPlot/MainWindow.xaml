@@ -183,13 +183,33 @@
             </TabItem>
             <TabItem Header="Подпитка свежим топливом">
                 <Grid>
-                    <oxy:Plot Title="Подпитка свежим топливом">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <oxy:Plot Title="Подпитка свежим топливом" x:Name="FuelPlots">
                         <oxy:Plot.Series>
                             <oxy:LineSeries ItemsSource="{Binding FuellingPoints}"/>
                             <oxy:LineSeries ItemsSource="{Binding ConstFuellingPoints}"/>
                         </oxy:Plot.Series>
                     </oxy:Plot>
-                  
+                    <Button Grid.Row="1" Content="Сохранить в PNG" Command="{Binding SavePlotCommand}" CommandParameter="{Binding ElementName=FuelPlots, Path=ActualModel}"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Невыработанный ресурс">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <oxy:Plot Title="Невыработанный ресурс" x:Name="Plots">
+                        <oxy:Plot.Series>
+                            <oxy:LineSeries ItemsSource="{Binding UnusedResource1}"/>
+                            <oxy:LineSeries ItemsSource="{Binding UnusedResource2}"/>
+                            <!--<oxy:LineSeries ItemsSource="{Binding TotalUnusedResource}"/>-->
+                        </oxy:Plot.Series>
+                    </oxy:Plot>
+                    <Button Grid.Row="1" Content="Сохранить в PNG" Command="{Binding SavePlotCommand}" CommandParameter="{Binding ElementName=Plots, Path=ActualModel}"/>
                 </Grid>
             </TabItem>
         </TabControl>

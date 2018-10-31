@@ -28,7 +28,6 @@ namespace OverloadOxyPlot.Model
                 OnPropertyChanged();
             }
         }
-
         public double W0 { get; set; }
         public double B { get; set; }
         public double Q0 { get; set; }
@@ -70,16 +69,6 @@ namespace OverloadOxyPlot.Model
             {
                 sum += NArray[j];
             }
-            if (Math.Abs(sum) <=1e-8)
-            {
-                sum = sum * DeltaE;
-                var alpha = assemblies.Count / sum;
-                for (int j = j1; j <= j2; j++)
-                {
-                    NArray[j] += alpha * NArray[j];
-                }
-            }
-            else
             {
                 for (int j = j1; j <= j2; j++)
                 {

@@ -20,10 +20,10 @@ namespace OverloadOxyPlot
         public ICommand CloseCommand => _closeCommand ?? (_closeCommand = new BaseCommand(o => ((Window)o).Close()));
         public Scenario()
         {
-            Count = 2;
-            DeltaE = 100;
-            SelectedWay = 0;
-            Days = 20;
+            Count = 1;
+            DeltaE = 50;
+            SelectedWay = 2;
+            Days = 365;
         }
     }
 }

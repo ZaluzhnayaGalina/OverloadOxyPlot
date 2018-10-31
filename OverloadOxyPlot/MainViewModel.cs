@@ -1,11 +1,12 @@
 ﻿using System;
 using OverloadOxyPlot.Model;
 using System.Windows.Input;
+using System.Windows.Forms;
 using MVVMTools;
 using OxyPlot;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
+using OxyPlot.Wpf;
 namespace OverloadOxyPlot
 {
     internal class MainViewModel : BaseNotifyPropertyChanged
@@ -42,9 +43,10 @@ namespace OverloadOxyPlot
         private ICommand _stoppedReactorInsertCommand;
         private ICommand _scenarioSettingsCommand;
         private ICommand _runCommand;
+        private ICommand _savePlotCommand;
         private string _progressBarVisibility;
         private double _progressBarValue=20;
-        private Cursor _cursor;
+        private System.Windows.Input.Cursor _cursor;
         private Scenario _scenario = new Scenario();
         public IReactor Reactor { get; set; }
         public IReactor StoppedReactor { get; set; }
@@ -52,7 +54,22 @@ namespace OverloadOxyPlot
         public ICommand StoppedReactorInsertCommand => _stoppedReactorInsertCommand ?? (_stoppedReactorInsertCommand = new BaseCommand(StoppedReactorInsert, InsertPossible));
         public ICommand ScenarioSettingsCommand => _scenarioSettingsCommand ?? (_scenarioSettingsCommand = new BaseCommand(ScenarioSet));
         public ICommand RunCommand => _runCommand ?? (_runCommand = new BaseCommand(RunScenario));
-        public Cursor Cursor
+        public ICommand SavePlotCommand=>_savePlotCommand ?? (_savePlotCommand = new BaseCommand(SavePlot));
+
+        private void SavePlot(object obj)
+        {
+            var model = obj as PlotModel;
+            if (model is null)
+                return;
+            var fd = new SaveFileDialog();
+            fd.ShowDialog();
+            if (fd.FileName is null || String.IsNullOrEmpty(fd.FileName))
+                return;
+            var pngExporter = new PngExporter { Width = 600, Height = 400, Background = OxyColors.White };
+            pngExporter.ExportToFile(model,fd.FileName);
+        }
+
+        public System.Windows.Input.Cursor Cursor
         {
             get=>_cursor;
             set
@@ -88,28 +105,16 @@ namespace OverloadOxyPlot
         private void RunScenario(object obj)
         {
             ProgressBarVisibility = "Visible";
-            Cursor = Cursors.Wait;
+            Cursor = System.Windows.Input.Cursors.Wait;
             if (_scenario.SelectedWay == 0)
                 RunMinToMax();
             if (_scenario.SelectedWay == 1)
                 RunMaxToMin();
             if (_scenario.SelectedWay == 2)
                 RunAlt();
-            //switch (_scenario.SelectedWay)
-            //{
-            //    case 1:
-            //        RumMaxToMin();
-            //        break;
-            //    case 2:
-            //        RunAlt();
-            //        break;
-            //    default:
-            //        RunMinToMax();
-            //        break;
-            //}
             ProgressBarVisibility = "Collapsed";
             ProgressBarValue = 0;
-            Cursor = Cursors.Arrow;
+            Cursor = System.Windows.Input.Cursors.Arrow;
         }
 
         private void RunMinToMax()
@@ -117,11 +122,14 @@ namespace OverloadOxyPlot
             Assemblies a = new Assemblies();
             for (int i=0; i<_scenario.Days; i++)
             {
-                a.Count = _scenario.Count;
-                a.E1 = StoppedReactor.NArray.FindIndex(x => x > 0) * StoppedReactor.DeltaE;
-                a.E2 = a.E1 + _scenario.DeltaE;
-                var a1 = StoppedReactor.Remove(a);
-                Reactor.Insert(a1);
+               // if (Reactor.AssembliesCount + _scenario.Count < 1668)
+               // {
+                    a.Count = _scenario.Count;
+                    a.E1 = StoppedReactor.NArray.FindIndex(x => x > 0) * StoppedReactor.DeltaE;
+                    a.E2 = a.E1 + _scenario.DeltaE;
+                    var a1 = StoppedReactor.Remove(a);
+                    Reactor.Insert(a1);
+                //}
                 for (int j = 0; j < 1.0 / Reactor.DeltaT; j++)
                 {
                     Reactor.Burn();
@@ -129,6 +137,11 @@ namespace OverloadOxyPlot
                 }
                 FuellingPoints.Add(new DataPoint(_day, _fuel));
                 ConstFuellingPoints.Add(new DataPoint(_day, Reactor.Q0));
+                var r1 = GetUnusedResources(Reactor);
+                var r2 = GetUnusedResources(StoppedReactor);
+                UnusedResource1.Add(new DataPoint(_day, r1));
+                UnusedResource2.Add(new DataPoint(_day, r2));
+                TotalUnusedResource.Add(new DataPoint(_day, r1 + r2));
                 _day++;
                 _fuel = 0;
                 //ProgressBarValue = (double)(i + 1) / (double)_scenario.Days * 100;
@@ -144,27 +157,33 @@ namespace OverloadOxyPlot
             bool tmp=true;
             for (int i = 0; i < _scenario.Days; i++)
             {
-                a.Count = _scenario.Count;
-                if (tmp)
+                if (Reactor.AssembliesCount + _scenario.Count < 1668)
                 {
-                    a.E1 = StoppedReactor.NArray.FindIndex(x => x > 0) * StoppedReactor.DeltaE;
-                    a.E2 = a.E1 + _scenario.DeltaE;
-                }
-                else
-                {
-                    for (int k = StoppedReactor.NArray.Count - 1; k >= 0; k--)
+                    a.Count = _scenario.Count;
+                    if (tmp)
                     {
-                        if (Math.Abs(StoppedReactor.NArray[k]) > 0.01)
-                        {
-                            a.E2 = k * StoppedReactor.DeltaE;
-                            break;
-                        }
+                        a.E1 = StoppedReactor.NArray.FindIndex(x => x > 0) * StoppedReactor.DeltaE;
+                        a.E2 = a.E1 + _scenario.DeltaE;
                     }
-                    a.E1 = a.E2 - _scenario.DeltaE;
-                }
-                a1 = StoppedReactor.Remove(a);
+                    else
+                    {
+                        //for (int k = StoppedReactor.NArray.Count - 1; k >= 0; k--)
+                        //{
+                        //    if (Math.Abs(StoppedReactor.NArray[k]) > 0.01)
+                        //    {
+                        //        a.E2 = k * StoppedReactor.DeltaE;
+                        //        break;
+                        //    }
+                        //}
+                        int id0 = StoppedReactor.NArray.FindIndex(x => x > 0);
+                        int k = id0 + (StoppedReactor.NArray.Count - id0) / 2;
+                        a.E2 = k * StoppedReactor.DeltaE + _scenario.DeltaE / 2;
+                        a.E1 = a.E2 - _scenario.DeltaE;
+                    }
+                    a1 = StoppedReactor.Remove(a);
 
-                Reactor.Insert(a1);
+                    Reactor.Insert(a1);
+                }
                 for (int j = 0; j < 1.0 / Reactor.DeltaT; j++)
                 {
                     Reactor.Burn();
@@ -172,6 +191,11 @@ namespace OverloadOxyPlot
                 }
                 FuellingPoints.Add(new DataPoint(_day, _fuel));
                 ConstFuellingPoints.Add(new DataPoint(_day, Reactor.Q0));
+                var r1 = GetUnusedResources(Reactor);
+                var r2 = GetUnusedResources(StoppedReactor);
+                UnusedResource1.Add(new DataPoint(_day, r1));
+                UnusedResource2.Add(new DataPoint(_day, r2));
+                TotalUnusedResource.Add(new DataPoint(_day, r1 + r2));
                 _day++;
                 _fuel = 0;
                 tmp = !tmp;
@@ -277,6 +301,9 @@ namespace OverloadOxyPlot
                 OnPropertyChanged();
             }
         }
+        public IList<DataPoint> UnusedResource1 { get; set; }
+        public IList<DataPoint> UnusedResource2 { get; set; }
+        public IList<DataPoint> TotalUnusedResource { get; set; }
         public ICommand BurnCommand => _burnCommand ?? (_burnCommand = new BaseCommand(Burn));
 
         private void Burn(object obj)
@@ -289,10 +316,42 @@ namespace OverloadOxyPlot
             //((BurningReactor)Reactor).Fuel();
             GetReactorPoints(Reactor,Points);
             GetReactorPoints(StoppedReactor,Points2);
+            var r1 = GetUnusedResources(Reactor);
+            var r2 = GetUnusedResources(StoppedReactor);
+            UnusedResource1.Add(new DataPoint(_day, r1));
+            UnusedResource2.Add(new DataPoint(_day, r2));
+            TotalUnusedResource.Add(new DataPoint(_day, r1 + r2));
             FuellingPoints.Add(new DataPoint(_day, _fuel));
             ConstFuellingPoints.Add(new DataPoint(_day, Reactor.Q0));
+
             _day++;
             _fuel = 0;
+        }
+        private void CollectData()
+        {
+            GetReactorPoints(Reactor,Points);
+            GetReactorPoints(StoppedReactor,Points2);
+            var r1 = GetUnusedResources(Reactor);
+            var r2 = GetUnusedResources(StoppedReactor);
+            UnusedResource1.Add(new DataPoint(_day, r1));
+            UnusedResource2.Add(new DataPoint(_day, r2));
+            TotalUnusedResource.Add(new DataPoint(_day, r1 + r2));
+            FuellingPoints.Add(new DataPoint(_day, _fuel));
+            ConstFuellingPoints.Add(new DataPoint(_day, Reactor.Q0));
+
+            _day++;
+            _fuel = 0;
+        }
+        private double GetUnusedResources(IReactor reactor)
+        {
+            double sum = 0;
+            for (int i = 0; i < reactor.NArray.Count;i++)
+            {
+                if (i * reactor.DeltaE > reactor.Em)
+                    break;
+                sum += (reactor.Em - i * reactor.DeltaE) * reactor.NArray[i];
+            }
+            return sum * reactor.DeltaE / reactor.Em;
         }
 
         private void GetReactorPoints(IContainer container, IList<DataPoint> points)
@@ -318,6 +377,9 @@ namespace OverloadOxyPlot
             Assemblies = new Assemblies();
             FuellingPoints = new ObservableCollection<DataPoint>();
             ConstFuellingPoints = new ObservableCollection<DataPoint>();
+            UnusedResource1 = new ObservableCollection<DataPoint>();
+            UnusedResource2 = new ObservableCollection<DataPoint>();
+            TotalUnusedResource = new ObservableCollection<DataPoint>();
         }
 
         private void OnFuelEvent(Assemblies fuelling)
