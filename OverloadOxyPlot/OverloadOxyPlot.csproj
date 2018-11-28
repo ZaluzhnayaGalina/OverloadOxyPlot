@@ -65,10 +65,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Scenario1\IScenario.cs" />
     <Compile Include="Model\IContainer.cs" />
     <Compile Include="Model\IReactor.cs" />
     <Compile Include="Model\ReactorSystem.cs" />
-    <Compile Include="Scenario.cs" />
+    <Compile Include="Scenario1\Scenario.cs" />
+    <Compile Include="Scenario1\ScenarioAlt.cs" />
+    <Compile Include="Scenario1\ScenarioMinToMax.cs" />
     <Compile Include="ScenarioSettings.xaml.cs">
       <DependentUpon>ScenarioSettings.xaml</DependentUpon>
     </Compile>
