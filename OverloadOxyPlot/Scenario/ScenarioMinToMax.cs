@@ -1,9 +1,5 @@
-﻿using OverloadOxyPlot.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using OverloadOxyPlot.Model;
 
 namespace OverloadOxyPlot.Scenario
 {
@@ -13,18 +9,22 @@ namespace OverloadOxyPlot.Scenario
         private IReactor _reactor;
         private IReactor _stoppedReactor;
         public double Count { get; set; }
-        public double DeltaE { get; set ; }
+        public double DeltaE { get; set; }
         public int Days { get; set; }
+        private string _description = "От свежего к выгоревшему";
+        public string Description
+        {
+            get => _description;
+            set
+            {
+                _description = value;                
+            }
+        }
+
         public ScenarioMinToMax(IReactor reactor, IReactor stoppedReactor)
         {
             _reactor = reactor;
             _stoppedReactor = stoppedReactor;
-            _reactor.FuelEvent += _reactor_FuelEvent;
-        }
-
-        private void _reactor_FuelEvent(object sender, FuelEventArgs fuelling)
-        {
-            _fuel += fuelling.Fuelling.Count;
         }
 
         public void Run()
@@ -43,28 +43,7 @@ namespace OverloadOxyPlot.Scenario
                     _stoppedReactor.Burn();
                 }
             }
-                FuellingPoints.Add(new DataPoint(_day, _fuel));
-                ConstFuellingPoints.Add(new DataPoint(_day, Reactor.Q0));
-                var r1 = GetUnusedResources(Reactor);
-                var r2 = GetUnusedResources(StoppedReactor);
-                UnusedResource1.Add(new DataPoint(_day, r1));
-                UnusedResource2.Add(new DataPoint(_day, r2));
-                TotalUnusedResource.Add(new DataPoint(_day, r1 + r2));
-                _day++;
-                _fuel = 0;
-                //ProgressBarValue = (double)(i + 1) / (double)_scenario.Days * 100;
-            }
-        }
-        private double GetUnusedResources(IReactor reactor)
-        {
-            double sum = 0;
-            for (int i = 0; i < reactor.NArray.Count; i++)
-            {
-                if (i * reactor.DeltaE > reactor.Em)
-                    break;
-                sum += (reactor.Em - i * reactor.DeltaE) * reactor.NArray[i];
-            }
-            return sum * reactor.DeltaE / reactor.Em;
         }
     }
 }
+    

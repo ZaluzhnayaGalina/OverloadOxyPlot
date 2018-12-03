@@ -1,9 +1,5 @@
-﻿using OverloadOxyPlot.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using OverloadOxyPlot.Model;
 
 namespace OverloadOxyPlot.Scenario
 {
@@ -14,6 +10,16 @@ namespace OverloadOxyPlot.Scenario
         public double Count { get ; set ; }
         public double DeltaE { get; set ; }
         public int Days { get; set; }
+        private string _description = "Попеременная перегрузка";
+        public string Description
+        {
+            get =>_description;
+            set
+            {
+                _description = value;
+            }
+        }
+
         public ScenarioAlt(IReactor reactor, IReactor stoppedReactor)
         {
             _reactor = reactor;
@@ -58,17 +64,7 @@ namespace OverloadOxyPlot.Scenario
                     _reactor.Burn();
                     _stoppedReactor.Burn();
                 }
-                FuellingPoints.Add(new DataPoint(_day, _fuel));
-                ConstFuellingPoints.Add(new DataPoint(_day, Reactor.Q0));
-                var r1 = GetUnusedResources(Reactor);
-                var r2 = GetUnusedResources(StoppedReactor);
-                UnusedResource1.Add(new DataPoint(_day, r1));
-                UnusedResource2.Add(new DataPoint(_day, r2));
-                TotalUnusedResource.Add(new DataPoint(_day, r1 + r2));
-                _day++;
-                _fuel = 0;
                 tmp = !tmp;
-                //ProgressBarValue = (double)(i + 1) / (double)_scenario.Days * 100;
             }
         }
     }

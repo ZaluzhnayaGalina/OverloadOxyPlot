@@ -12,9 +12,7 @@ namespace OverloadOxyPlot.Scenario
         double Count { get; set; }
         double DeltaE { get; set; }
         int Days { get; set; }
+        string Description { get; set; }
         void Run();
-        IList<DataPoint> UnusedResource1 { get; set; }
-        IList<DataPoint> UnusedResource2 { get; set; }
-        IList<DataPoint> TotalUnusedResource { get; set; }
     }
 }

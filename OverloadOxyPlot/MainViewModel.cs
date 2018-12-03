@@ -7,6 +7,8 @@ using OxyPlot;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using OxyPlot.Wpf;
+using OverloadOxyPlot.Scenario;
+
 namespace OverloadOxyPlot
 {
     internal class MainViewModel : BaseNotifyPropertyChanged
@@ -31,6 +33,8 @@ namespace OverloadOxyPlot
         }
         private int _day = 1;
         private double _fuel = 0;
+
+        public ObservableCollection<IScenario> Scenarios { get; set; }
         public IList<DataPoint> FuellingPoints { get; set; }// 
         public IList<DataPoint> ConstFuellingPoints { get; set; }// 
         public Assemblies StoppedReactorAssemblies { get; set; }
@@ -47,7 +51,15 @@ namespace OverloadOxyPlot
         private string _progressBarVisibility;
         private double _progressBarValue=20;
         private System.Windows.Input.Cursor _cursor;
-        private Scenario _scenario = new Scenario();
+        private IScenario _scenario;
+        public IScenario Scenario
+        {
+            get => _scenario;
+            set
+            {
+                _scenario = value;
+            }
+        }
         public IReactor Reactor { get; set; }
         public IReactor StoppedReactor { get; set; }
         public ICommand StoppedReactorRemoveCommand => _stoppedReactorRemoveCommand ?? (_stoppedReactorRemoveCommand = new BaseCommand(StoppedReactorRemove));
@@ -80,162 +92,11 @@ namespace OverloadOxyPlot
                 OnPropertyChanged();
             }
         }
-        public string ProgressBarVisibility
-        {
-            get => _progressBarVisibility;
-            set
-            {
-                if (value == _progressBarVisibility)
-                    return;
-                _progressBarVisibility = value;
-                OnPropertyChanged();
-            }
-        }
-        public double ProgressBarValue
-        {
-            get=>_progressBarValue;
-            set
-            {
-                if (value == _progressBarValue)
-                    return;
-                _progressBarValue = value;
-                OnPropertyChanged();
-            }
-        }
+
+
         private void RunScenario(object obj)
         {
-            ProgressBarVisibility = "Visible";
-            Cursor = System.Windows.Input.Cursors.Wait;
-            if (_scenario.SelectedWay == 0)
-                RunMinToMax();
-            if (_scenario.SelectedWay == 1)
-                RunMaxToMin();
-            if (_scenario.SelectedWay == 2)
-                RunAlt();
-            ProgressBarVisibility = "Collapsed";
-            ProgressBarValue = 0;
-            Cursor = System.Windows.Input.Cursors.Arrow;
-        }
-
-        private void RunMinToMax()
-        {
-            Assemblies a = new Assemblies();
-            for (int i=0; i<_scenario.Days; i++)
-            {
-               // if (Reactor.AssembliesCount + _scenario.Count < 1668)
-               // {
-                    a.Count = _scenario.Count;
-                    a.E1 = StoppedReactor.NArray.FindIndex(x => x > 0) * StoppedReactor.DeltaE;
-                    a.E2 = a.E1 + _scenario.DeltaE;
-                    var a1 = StoppedReactor.Remove(a);
-                    Reactor.Insert(a1);
-                //}
-                for (int j = 0; j < 1.0 / Reactor.DeltaT; j++)
-                {
-                    Reactor.Burn();
-                    StoppedReactor.Burn();
-                }
-                FuellingPoints.Add(new DataPoint(_day, _fuel));
-                ConstFuellingPoints.Add(new DataPoint(_day, Reactor.Q0));
-                var r1 = GetUnusedResources(Reactor);
-                var r2 = GetUnusedResources(StoppedReactor);
-                UnusedResource1.Add(new DataPoint(_day, r1));
-                UnusedResource2.Add(new DataPoint(_day, r2));
-                TotalUnusedResource.Add(new DataPoint(_day, r1 + r2));
-                _day++;
-                _fuel = 0;
-                //ProgressBarValue = (double)(i + 1) / (double)_scenario.Days * 100;
-            }
-            GetReactorPoints(Reactor, Points);
-            GetReactorPoints(StoppedReactor, Points2);
-        }
-
-        private void RunAlt()
-        {
-            Assemblies a = new Assemblies();
-            Assemblies a1 = new Assemblies();
-            bool tmp=true;
-            for (int i = 0; i < _scenario.Days; i++)
-            {
-                if (Reactor.AssembliesCount + _scenario.Count < 1668)
-                {
-                    a.Count = _scenario.Count;
-                    if (tmp)
-                    {
-                        a.E1 = StoppedReactor.NArray.FindIndex(x => x > 0) * StoppedReactor.DeltaE;
-                        a.E2 = a.E1 + _scenario.DeltaE;
-                    }
-                    else
-                    {
-                        //for (int k = StoppedReactor.NArray.Count - 1; k >= 0; k--)
-                        //{
-                        //    if (Math.Abs(StoppedReactor.NArray[k]) > 0.01)
-                        //    {
-                        //        a.E2 = k * StoppedReactor.DeltaE;
-                        //        break;
-                        //    }
-                        //}
-                        int id0 = StoppedReactor.NArray.FindIndex(x => x > 0);
-                        int k = id0 + (StoppedReactor.NArray.Count - id0) / 2;
-                        a.E2 = k * StoppedReactor.DeltaE + _scenario.DeltaE / 2;
-                        a.E1 = a.E2 - _scenario.DeltaE;
-                    }
-                    a1 = StoppedReactor.Remove(a);
-
-                    Reactor.Insert(a1);
-                }
-                for (int j = 0; j < 1.0 / Reactor.DeltaT; j++)
-                {
-                    Reactor.Burn();
-                    StoppedReactor.Burn();
-                }
-                FuellingPoints.Add(new DataPoint(_day, _fuel));
-                ConstFuellingPoints.Add(new DataPoint(_day, Reactor.Q0));
-                var r1 = GetUnusedResources(Reactor);
-                var r2 = GetUnusedResources(StoppedReactor);
-                UnusedResource1.Add(new DataPoint(_day, r1));
-                UnusedResource2.Add(new DataPoint(_day, r2));
-                TotalUnusedResource.Add(new DataPoint(_day, r1 + r2));
-                _day++;
-                _fuel = 0;
-                tmp = !tmp;
-                //ProgressBarValue = (double)(i + 1) / (double)_scenario.Days * 100;
-            }
-            GetReactorPoints(Reactor, Points);
-            GetReactorPoints(StoppedReactor, Points2);
-        }
-
-        private void RunMaxToMin()
-        {
-            
-            Assemblies a = new Assemblies();
-            for (int i = 0; i < _scenario.Days; i++)
-            {
-                a.Count = _scenario.Count;
-                for(int k= StoppedReactor.NArray.Count-1; k>=0;k--)
-                {
-                    if (Math.Abs(StoppedReactor.NArray[k])>0.01)
-                    {
-                        a.E2 = k * StoppedReactor.DeltaE;
-                        break;
-                    }
-                }
-                a.E1 = a.E2 - _scenario.DeltaE;
-                var a1 = StoppedReactor.Remove(a);
-                Reactor.Insert(a1);
-                for (int j = 0; j < 1.0 / Reactor.DeltaT; j++)
-                {
-                    Reactor.Burn();
-                    StoppedReactor.Burn();
-                }
-                FuellingPoints.Add(new DataPoint(_day, _fuel));
-                ConstFuellingPoints.Add(new DataPoint(_day, Reactor.Q0));
-                _day++;
-                _fuel = 0;
-              //  ProgressBarValue = ProgressBarValue + 1.0 / (double)_scenario.Days * 100;
-            }
-            GetReactorPoints(Reactor, Points);
-            GetReactorPoints(StoppedReactor, Points2);
+            _scenario.Run();            
         }
 
         private void ScenarioSet(object obj)
@@ -252,14 +113,12 @@ namespace OverloadOxyPlot
         private void StoppedReactorInsert(object obj)
         {
             StoppedReactor.Insert(Assemblies);
-            AssembliesList.Remove(Assemblies);
-            GetReactorPoints(StoppedReactor, Points2);
+            AssembliesList.Remove(Assemblies);;
         }
 
         private void StoppedReactorRemove(object obj)
         {
             AssembliesList.Add(StoppedReactor.Remove(StoppedReactorAssemblies));
-            GetReactorPoints(StoppedReactor, Points2);
         }
 
         public ICommand RemoveCommand => _removeCommand ?? (_removeCommand = new BaseCommand(Remove));
@@ -267,7 +126,6 @@ namespace OverloadOxyPlot
         private void Remove(object obj)
         {
             AssembliesList.Add(Reactor.Remove(BurningReactorAssemblies));
-            GetReactorPoints(Reactor,Points);
         }
 
         public ICommand InsertCommand => _insertCommand ?? (_insertCommand = new BaseCommand(Insert, InsertPossible));
@@ -276,34 +134,9 @@ namespace OverloadOxyPlot
         {
             Reactor.Insert(Assemblies);
             AssembliesList.Remove(Assemblies);
-            GetReactorPoints(Reactor, Points);
         }
 
-        public IList<DataPoint> Points
-        {
-            get=>_points;
-            set
-            {
-                if (value.Equals(_points))
-                    return;
-                _points = value;
-                OnPropertyChanged();
-            }
-        }
-        public IList<DataPoint> Points2
-        {
-            get => _points2;
-            set
-            {
-                if (value.Equals(_points2))
-                    return;
-                _points2 = value;
-                OnPropertyChanged();
-            }
-        }
-        public IList<DataPoint> UnusedResource1 { get; set; }
-        public IList<DataPoint> UnusedResource2 { get; set; }
-        public IList<DataPoint> TotalUnusedResource { get; set; }
+        
         public ICommand BurnCommand => _burnCommand ?? (_burnCommand = new BaseCommand(Burn));
 
         private void Burn(object obj)
@@ -313,53 +146,6 @@ namespace OverloadOxyPlot
                 Reactor.Burn();
                 StoppedReactor.Burn();
             }
-            //((BurningReactor)Reactor).Fuel();
-            GetReactorPoints(Reactor,Points);
-            GetReactorPoints(StoppedReactor,Points2);
-            var r1 = GetUnusedResources(Reactor);
-            var r2 = GetUnusedResources(StoppedReactor);
-            UnusedResource1.Add(new DataPoint(_day, r1));
-            UnusedResource2.Add(new DataPoint(_day, r2));
-            TotalUnusedResource.Add(new DataPoint(_day, r1 + r2));
-            FuellingPoints.Add(new DataPoint(_day, _fuel));
-            ConstFuellingPoints.Add(new DataPoint(_day, Reactor.Q0));
-
-            _day++;
-            _fuel = 0;
-        }
-        private void CollectData()
-        {
-            GetReactorPoints(Reactor,Points);
-            GetReactorPoints(StoppedReactor,Points2);
-            var r1 = GetUnusedResources(Reactor);
-            var r2 = GetUnusedResources(StoppedReactor);
-            UnusedResource1.Add(new DataPoint(_day, r1));
-            UnusedResource2.Add(new DataPoint(_day, r2));
-            TotalUnusedResource.Add(new DataPoint(_day, r1 + r2));
-            FuellingPoints.Add(new DataPoint(_day, _fuel));
-            ConstFuellingPoints.Add(new DataPoint(_day, Reactor.Q0));
-
-            _day++;
-            _fuel = 0;
-        }
-        private double GetUnusedResources(IReactor reactor)
-        {
-            double sum = 0;
-            for (int i = 0; i < reactor.NArray.Count;i++)
-            {
-                if (i * reactor.DeltaE > reactor.Em)
-                    break;
-                sum += (reactor.Em - i * reactor.DeltaE) * reactor.NArray[i];
-            }
-            return sum * reactor.DeltaE / reactor.Em;
-        }
-
-        private void GetReactorPoints(IContainer container, IList<DataPoint> points)
-        {
-            points.Clear();
-            for (int j = 0; j < container.NArray.Count; j++)
-                points.Add(new DataPoint(j * container.DeltaE, container.NArray[j]));
-
         }
 
          public MainViewModel()
@@ -367,19 +153,15 @@ namespace OverloadOxyPlot
             Reactor = new BurningReactor();
             ((BurningReactor)Reactor).FuelEvent += OnFuelEvent;
             StoppedReactor = new StoppedReactor();
-            Points = new ObservableCollection<DataPoint>();
-            Points2 = new ObservableCollection<DataPoint>();
-            GetReactorPoints(Reactor, Points);
-            GetReactorPoints(StoppedReactor, Points2);
+           
             AssembliesList = new ObservableCollection<Assemblies>();
             StoppedReactorAssemblies = new Assemblies(1.0, 400.0,500.0);
             BurningReactorAssemblies = new Assemblies(2.0, 2000.0, 2500.0);
             Assemblies = new Assemblies();
-            FuellingPoints = new ObservableCollection<DataPoint>();
-            ConstFuellingPoints = new ObservableCollection<DataPoint>();
-            UnusedResource1 = new ObservableCollection<DataPoint>();
-            UnusedResource2 = new ObservableCollection<DataPoint>();
-            TotalUnusedResource = new ObservableCollection<DataPoint>();
+
+            Scenarios = new ObservableCollection<IScenario>();
+            Scenarios.Add(new ScenarioMinToMax(Reactor, StoppedReactor));
+            Scenarios.Add(new ScenarioAlt(Reactor, StoppedReactor));
         }
 
         private void OnFuelEvent(Assemblies fuelling)
