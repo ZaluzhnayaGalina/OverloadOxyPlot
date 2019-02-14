@@ -4,18 +4,19 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using OverloadOxyPlot.Model.Interfaces;
 
-namespace OverloadOxyPlot.Model
+namespace OverloadOxyPlot.Model.Implementations
 {
     public class BurningReactor : IReactor, INotifyPropertyChanged
     {
         public double Em { get; set; }
+
+        private const int MaxAssembliesCount = 1670;
         private double _eAverage;
         public static double a2 = 0.06;
         public static double m = 0.2;
         public static double besselConst = 2.405;
-        public delegate void Fuelled(Assemblies fuelling);
-        public event Fuelled FuelEvent;
         public double A;
         public double EAverage
         {
@@ -51,6 +52,10 @@ namespace OverloadOxyPlot.Model
                 OnPropertyChanged();
             }
         }
+
+        public EventHandler<DayEventArgs> DayPassed { get ; set; }
+        public int T { get; set; }
+
         private double _mef;
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -163,7 +168,8 @@ namespace OverloadOxyPlot.Model
 
         public void Fuel()
         {
-            while (AssembliesCount >= 1670)
+            var fuel = 0.0;
+            while (AssembliesCount >= MaxAssembliesCount)
             {
                 var a = new Assemblies();
                 for (int k = NArray.Count - 1; k >= 0; k--)
@@ -181,21 +187,23 @@ namespace OverloadOxyPlot.Model
             int j = 0;
             double kinf = NArray.Sum(x => x * (K0 - A * DeltaE * j++)) / NArray.Sum();
             double r = Math.Sqrt(a2 * AssembliesCount / Math.PI);
-            double keff = kinf / (1 + Math.Pow(m * 2.405 / r, 2.0));
+            double keff = kinf / (1 + Math.Pow(m * besselConst / r, 2.0));
             while (keff < 1.0125)
             {
-                Insert(new Assemblies(0.001, 0.0, 1));
-
-                //NArray[0] += Q0/W0;
-                FuelEvent.Invoke(new Assemblies(0.001, 0.0, 1));
+                const double minFreshCount = 0.001;
+                Insert(new Assemblies(minFreshCount, 0.0, 1));
+                fuel += 0.001;
                 j = 0;
                 kinf = NArray.Sum(x => x * (K0 - A * DeltaE * j++)) / NArray.Sum();
                 r = Math.Sqrt(a2 * AssembliesCount / Math.PI);
-                keff = kinf / (1 + Math.Pow(m * 2.405 / r, 2.0));
+                keff = kinf / (1 + Math.Pow(m * besselConst / r, 2.0));
 
             }
             Mef = keff;
             OnPropertyChanged("AssembliesCount");
+            var fuelled = new DayEventArgs(fuel, NArray);
+            T += 1;
+            DayPassed?.Invoke(this, fuelled);
         }
     }
 }

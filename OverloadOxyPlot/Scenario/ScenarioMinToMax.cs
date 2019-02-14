@@ -1,5 +1,7 @@
 ﻿using System;
 using OverloadOxyPlot.Model;
+using OverloadOxyPlot.Model.Implementations;
+using OverloadOxyPlot.Model.Interfaces;
 
 namespace OverloadOxyPlot.Scenario
 {
@@ -42,6 +44,8 @@ namespace OverloadOxyPlot.Scenario
                     _reactor.Burn();
                     _stoppedReactor.Burn();
                 }
+                _reactor.Fuel();
+                _stoppedReactor.Fuel();
             }
         }
     }

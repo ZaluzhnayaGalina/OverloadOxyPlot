@@ -65,12 +65,15 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
-    <Compile Include="GraphicsManager.cs" />
-    <Compile Include="Model\BurningReactor.cs" />
+    <Compile Include="Graphics\CustomGraphic.cs" />
+    <Compile Include="Graphics\FuelGraphic.cs" />
+    <Compile Include="Graphics\IGraphicsManager.cs" />
+    <Compile Include="Graphics\SpectrumGraphic.cs" />
+    <Compile Include="Model\Assemblies.cs" />
+    <Compile Include="Model\Implementations\BurningReactor.cs" />
     <Compile Include="Scenario\IScenario.cs" />
-    <Compile Include="Model\IContainer.cs" />
-    <Compile Include="Model\IReactor.cs" />
-    <Compile Include="Model\ReactorSystem.cs" />
+    <Compile Include="Model\Interfaces\IContainer.cs" />
+    <Compile Include="Model\Interfaces\IReactor.cs" />
     <Compile Include="Scenario\ScenarioAlt.cs" />
     <Compile Include="Scenario\ScenarioMinToMax.cs" />
     <Compile Include="ScenarioSettings.xaml.cs">
@@ -96,8 +99,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\StoppedReactor.cs" />
-    <Compile Include="Model\Record.cs" />
+    <Compile Include="Model\Implementations\StoppedReactor.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

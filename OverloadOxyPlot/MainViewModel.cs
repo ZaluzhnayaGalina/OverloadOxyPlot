@@ -8,12 +8,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using OxyPlot.Wpf;
 using OverloadOxyPlot.Scenario;
+using OverloadOxyPlot.Model.Interfaces;
+using OverloadOxyPlot.Model.Implementations;
 
 namespace OverloadOxyPlot
 {
     internal class MainViewModel : BaseNotifyPropertyChanged
     {
-        private IList<DataPoint> _points;
         public IList<Assemblies> AssembliesList { get; set; }
         private Assemblies _assemblies;
         public Assemblies Assemblies
@@ -31,15 +32,10 @@ namespace OverloadOxyPlot
                 OnPropertyChanged();
             }
         }
-        private int _day = 1;
-        private double _fuel = 0;
 
         public ObservableCollection<IScenario> Scenarios { get; set; }
-        public IList<DataPoint> FuellingPoints { get; set; }// 
-        public IList<DataPoint> ConstFuellingPoints { get; set; }// 
         public Assemblies StoppedReactorAssemblies { get; set; }
         public Assemblies BurningReactorAssemblies { get; set; }
-        private IList<DataPoint> _points2;
         private ICommand _burnCommand;
         private ICommand _removeCommand;
         private ICommand _insertCommand;
@@ -48,8 +44,6 @@ namespace OverloadOxyPlot
         private ICommand _scenarioSettingsCommand;
         private ICommand _runCommand;
         private ICommand _savePlotCommand;
-        private string _progressBarVisibility;
-        private double _progressBarValue=20;
         private System.Windows.Input.Cursor _cursor;
         private IScenario _scenario;
         public IScenario Scenario
@@ -146,12 +140,13 @@ namespace OverloadOxyPlot
                 Reactor.Burn();
                 StoppedReactor.Burn();
             }
+            Reactor.Fuel();
+            StoppedReactor.Fuel();
         }
 
          public MainViewModel()
         {
             Reactor = new BurningReactor();
-            ((BurningReactor)Reactor).FuelEvent += OnFuelEvent;
             StoppedReactor = new StoppedReactor();
            
             AssembliesList = new ObservableCollection<Assemblies>();
@@ -164,9 +159,5 @@ namespace OverloadOxyPlot
             Scenarios.Add(new ScenarioAlt(Reactor, StoppedReactor));
         }
 
-        private void OnFuelEvent(Assemblies fuelling)
-        {
-            _fuel += fuelling.Count;
-        }
     }  
 }
