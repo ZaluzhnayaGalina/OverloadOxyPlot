@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using OverloadOxyPlot.Graphics.Interfaces;
 using OverloadOxyPlot.Model.Interfaces;
 using OxyPlot;
 
-namespace OverloadOxyPlot.Graphics
+namespace OverloadOxyPlot.Graphics.Implementations
 {
-    class SpectrumGraphic : IGraphic
-    {
+    public class SpectrumGraphic: IGraphic
+    { 
         public IList<DataPoint> Points { get; set; } = new ObservableCollection<DataPoint>();
 
-        public void GetData(IReactor reactor, DayEventArgs eventArgs)
+        public void GetData(IReactor reactor)
         {
             Points.Clear();
             for (int j = 0; j < reactor.NArray.Count; j++)

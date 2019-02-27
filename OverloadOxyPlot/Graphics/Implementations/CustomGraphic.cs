@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using OverloadOxyPlot.Graphics.Interfaces;
 using OverloadOxyPlot.Model.Interfaces;
 using OxyPlot;
 
-namespace OverloadOxyPlot.Graphics
+namespace OverloadOxyPlot.Graphics.Implementations
 {
-    class CustomGraphic : IGraphic
+    class CustomGraphic : IGraphic, IDataGetter
     {
         public IList<DataPoint> Points { get; set; }
         private Func<DayEventArgs, double> _function;
@@ -15,9 +16,12 @@ namespace OverloadOxyPlot.Graphics
             _function = function;
             Points = new ObservableCollection<DataPoint>();
         }
-        public void GetData(IReactor reactor, DayEventArgs eventArgs)
+        public void GetData(object reactor, DayEventArgs eventArgs)
         {
-            Points.Add(new DataPoint(reactor.T, _function(eventArgs)));
+            var ireactor = reactor as IReactor;
+            if (ireactor is null)
+                return;
+            Points.Add(new DataPoint(ireactor.T, _function(eventArgs)));
         }
     }
 }

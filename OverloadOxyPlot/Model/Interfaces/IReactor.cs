@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OverloadOxyPlot.Model.Interfaces
 {
-    interface IReactor: IContainer
+    public interface IReactor: IContainer
     {
         double W0 { get; set; }
         double B { get; set; }

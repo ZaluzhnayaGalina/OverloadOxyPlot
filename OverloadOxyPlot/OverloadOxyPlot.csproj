@@ -65,10 +65,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
-    <Compile Include="Graphics\CustomGraphic.cs" />
-    <Compile Include="Graphics\FuelGraphic.cs" />
-    <Compile Include="Graphics\IGraphicsManager.cs" />
-    <Compile Include="Graphics\SpectrumGraphic.cs" />
+    <Compile Include="Graphics\Implementations\CustomGraphic.cs" />
+    <Compile Include="Graphics\Implementations\FuelGraphic.cs" />
+    <Compile Include="Graphics\Interfaces\IDataGetter.cs" />
+    <Compile Include="Graphics\Interfaces\IGraphic.cs" />
+    <Compile Include="Graphics\Implementations\SpectrumGraphic.cs" />
     <Compile Include="Model\Assemblies.cs" />
     <Compile Include="Model\Implementations\BurningReactor.cs" />
     <Compile Include="Scenario\IScenario.cs" />
@@ -127,5 +128,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

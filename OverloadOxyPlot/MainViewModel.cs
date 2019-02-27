@@ -6,6 +6,9 @@ using MVVMTools;
 using OxyPlot;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using OverloadOxyPlot.Graphics;
+using OverloadOxyPlot.Graphics.Implementations;
+using OverloadOxyPlot.Graphics.Interfaces;
 using OxyPlot.Wpf;
 using OverloadOxyPlot.Scenario;
 using OverloadOxyPlot.Model.Interfaces;
@@ -33,9 +36,6 @@ namespace OverloadOxyPlot
             }
         }
 
-        public ObservableCollection<IScenario> Scenarios { get; set; }
-        public Assemblies StoppedReactorAssemblies { get; set; }
-        public Assemblies BurningReactorAssemblies { get; set; }
         private ICommand _burnCommand;
         private ICommand _removeCommand;
         private ICommand _insertCommand;
@@ -144,11 +144,19 @@ namespace OverloadOxyPlot
             StoppedReactor.Fuel();
         }
 
-         public MainViewModel()
+        public IGraphic SpectrumGraphic1 { get; set; }
+        public IGraphic SpectrumGraphic2 { get; set; }
+        public MainViewModel()
         {
             Reactor = new BurningReactor();
             StoppedReactor = new StoppedReactor();
-           
+
+            SpectrumGraphic1 = new SpectrumGraphic();
+            StoppedReactor.DayPassed += SpectrumGraphic1.GetData;
+
+            SpectrumGraphic2 = new SpectrumGraphic();
+            Reactor.DayPassed += SpectrumGraphic2.GetData;
+
             AssembliesList = new ObservableCollection<Assemblies>();
             StoppedReactorAssemblies = new Assemblies(1.0, 400.0,500.0);
             BurningReactorAssemblies = new Assemblies(2.0, 2000.0, 2500.0);

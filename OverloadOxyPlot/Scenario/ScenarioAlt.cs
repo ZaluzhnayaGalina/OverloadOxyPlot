@@ -1,9 +1,10 @@
-﻿using OverloadOxyPlot.Model;
+﻿using System.ComponentModel;
+using OverloadOxyPlot.Model;
 using OverloadOxyPlot.Model.Interfaces;
 
 namespace OverloadOxyPlot.Scenario
 {
-    class ScenarioAlt : IScenario
+    public class ScenarioAlt : IScenario
     {
         private IReactor _reactor;
         private IReactor _stoppedReactor;
