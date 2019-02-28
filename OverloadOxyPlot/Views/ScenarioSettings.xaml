@@ -1,11 +1,19 @@
-﻿<Window x:Class="OverloadOxyPlot.ScenarioSettings"
+﻿<Window x:Class="OverloadOxyPlot.Views.ScenarioSettings"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:OverloadOxyPlot"
+        xmlns:scenario="clr-namespace:OverloadOxyPlot.Scenario"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="ScenarioSettings" Height="195" Width="484">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="TypesFromEnum" ObjectType="{x:Type system:Enum}" MethodName="GetValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="scenario:ScenarioTypes"></x:Type>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -22,13 +30,10 @@
                 <TextBox Text="{Binding Path=DeltaE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox Text="{Binding Path=Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox Text="{Binding Path=Days, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <ComboBox SelectedIndex="{Binding Path=SelectedWay}">
-                    <ComboBoxItem>От минимума к максимуму</ComboBoxItem>
-                    <ComboBoxItem>От максимума к минимуму</ComboBoxItem>
-                    <ComboBoxItem>Попеременно</ComboBoxItem>
-                </ComboBox>
+                <ComboBox ItemsSource="{Binding Source={StaticResource TypesFromEnum}}"
+                          SelectedItem="{Binding ScenarioType}"></ComboBox>
             </StackPanel>
         </StackPanel>
-        <Button Content="Ok" Grid.Row="1" Command="{Binding Path=CloseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" IsEnabled="True"/>
+       
     </Grid>
 </Window>

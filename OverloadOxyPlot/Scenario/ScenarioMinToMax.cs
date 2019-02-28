@@ -1,27 +1,15 @@
-﻿using System;
-using OverloadOxyPlot.Model;
-using OverloadOxyPlot.Model.Implementations;
+﻿using OverloadOxyPlot.Model;
 using OverloadOxyPlot.Model.Interfaces;
 
 namespace OverloadOxyPlot.Scenario
 {
     class ScenarioMinToMax : IScenario
     {
-        private double _fuel;
         private IReactor _reactor;
         private IReactor _stoppedReactor;
         public double Count { get; set; }
         public double DeltaE { get; set; }
         public int Days { get; set; }
-        private string _description = "От свежего к выгоревшему";
-        public string Description
-        {
-            get => _description;
-            set
-            {
-                _description = value;                
-            }
-        }
 
         public ScenarioMinToMax(IReactor reactor, IReactor stoppedReactor)
         {

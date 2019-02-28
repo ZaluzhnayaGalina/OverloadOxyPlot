@@ -76,11 +76,17 @@
     <Compile Include="Model\Interfaces\IContainer.cs" />
     <Compile Include="Model\Interfaces\IReactor.cs" />
     <Compile Include="Scenario\ScenarioAlt.cs" />
+    <Compile Include="Scenario\ScenarioCreator.cs" />
     <Compile Include="Scenario\ScenarioMinToMax.cs" />
-    <Compile Include="ScenarioSettings.xaml.cs">
+    <Compile Include="Views\ScenarioSettings.xaml.cs">
       <DependentUpon>ScenarioSettings.xaml</DependentUpon>
     </Compile>
-    <Page Include="MainWindow.xaml">
+    <Compile Include="Scenario\ScenarioTypes.cs" />
+    <Compile Include="ViewModels\ReactorViewModel.cs" />
+    <Compile Include="Views\ReactorControl.xaml.cs">
+      <DependentUpon>ReactorControl.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -89,12 +95,20 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Converters\EnumToCollectionConverter.cs" />
-    <Compile Include="MainViewModel.cs" />
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="ScenarioSettings.xaml">
+    <Page Include="Views\ScenarioSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ReactorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Style.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -119,7 +133,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

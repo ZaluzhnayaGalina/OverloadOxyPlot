@@ -1,0 +1,120 @@
+﻿<Window x:Class="OverloadOxyPlot.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:model="clr-namespace:OverloadOxyPlot.Model"
+        xmlns:viewModels="clr-namespace:OverloadOxyPlot.ViewModels"
+        xmlns:views="clr-namespace:OverloadOxyPlot.Views"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="Auto" Width="Auto"
+        WindowState="Maximized"
+        Background="#EDE7F6"
+        FontSize="14" FontFamily="14">
+    <Grid Cursor="{Binding Path=Cursor}">
+       <Grid.DataContext>
+            <viewModels:MainViewModel/>
+       </Grid.DataContext>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0">
+            <MenuItem Header="Сценарий">
+                <MenuItem Header="Настроить" Command="{Binding Path=ScenarioSettingsCommand}"/>
+                <MenuItem Header="Запустить" Command="{Binding Path=RunCommand}"/>
+            </MenuItem>
+        </Menu>
+        <TabControl Grid.Row="1">
+            <TabItem Header="Реакторы">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <views:ReactorControl Grid.Column="0" DataContext="{Binding StoppedReactorViewModel}"/>
+                    <Grid Grid.Row="0" Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Vertical" Grid.Row="0" MinWidth="200">
+                            <Label Content="Хранилище"></Label>
+                            <ScrollViewer >
+                                <ListView ItemsSource="{Binding AssembliesList, Mode=TwoWay}" x:Name="Container"
+                                          ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                          SelectedItem="{Binding Assemblies}" SelectionMode="Single" Background="#EDE7F6">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate DataType="model:Assemblies">
+                                            <StackPanel Orientation="Horizontal">
+                                                <StackPanel.Resources>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Height" Value="25"></Setter>
+                                                        <Setter Property="Margin" Value="5"></Setter>
+                                                        <Setter Property="Background" Value="#EDE7F6"></Setter>
+                                                    </Style>
+                                                </StackPanel.Resources>
+                                                <TextBlock Text="E1: "/>
+                                                <TextBlock Text="{Binding E1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                <TextBlock Text="E2:"/>
+                                                <TextBlock Text="{Binding E2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                <TextBlock Text="n:"/>
+                                                <TextBlock Text="{Binding Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </Grid>
+                    <views:ReactorControl Grid.Column="2" DataContext="{Binding ReactorViewModel}"/>
+                    <!--<StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" HorizontalAlignment="Center">-->
+                    <Button Content="Сутки" Command="{Binding BurnCommand}" HorizontalAlignment="Center"  Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"/>
+                    <!--<Button Content="Настроить скрипт..." Command="{Binding ScenarioSettingsCommand}" HorizontalAlignment="Center"/>-->
+                    <!--<Button Content="Запуск" HorizontalAlignment="Center"/>-->
+                    <!--</StackPanel>-->
+                </Grid>
+            </TabItem>
+            <TabItem Header="Подпитка свежим топливом">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <oxy:Plot Title="Подпитка свежим топливом" x:Name="FuelPlots">
+                        <oxy:Plot.Series>
+                            <oxy:LineSeries ItemsSource="{Binding FuellingPoints}"/>
+                            <oxy:LineSeries ItemsSource="{Binding ConstFuellingPoints}"/>
+                        </oxy:Plot.Series>
+                    </oxy:Plot>
+                    <Button Grid.Row="1" Content="Сохранить в PNG" Command="{Binding SavePlotCommand}" CommandParameter="{Binding ElementName=FuelPlots, Path=ActualModel}"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Невыработанный ресурс">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <oxy:Plot Title="Невыработанный ресурс" x:Name="Plots">
+                        <oxy:Plot.Series>
+                            <oxy:LineSeries ItemsSource="{Binding UnusedResource1}"/>
+                            <oxy:LineSeries ItemsSource="{Binding UnusedResource2}"/>
+                            <!--<oxy:LineSeries ItemsSource="{Binding TotalUnusedResource}"/>-->
+                        </oxy:Plot.Series>
+                    </oxy:Plot>
+                    <Button Grid.Row="1" Content="Сохранить в PNG" Command="{Binding SavePlotCommand}" CommandParameter="{Binding ElementName=Plots, Path=ActualModel}"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <!--<Label FontSize="16" Grid.Row="2" Content="{Binding Path=ProgressBarValue}"/>-->
+        
+    </Grid>
+</Window>
