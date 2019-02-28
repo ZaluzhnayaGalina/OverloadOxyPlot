@@ -6,8 +6,9 @@ using OxyPlot;
 
 namespace OverloadOxyPlot.Graphics.Implementations
 {
-    public class FuelGraphic : IGraphic, IDataGetter
+    public class SumFuelGraphic : IGraphic, IDataGetter
     {
+        private double _sumFuel;
         public IList<DataPoint> Points { get; set; } = new ObservableCollection<DataPoint>();
 
         public void GetData(object reactor, DayEventArgs eventArgs)
@@ -15,7 +16,8 @@ namespace OverloadOxyPlot.Graphics.Implementations
             var ireactor = reactor as IReactor;
             if (ireactor is null)
                 return;
-            Points.Add(new DataPoint(ireactor.T, eventArgs.Fuel));
+            _sumFuel += eventArgs.Fuel;
+            Points.Add(new DataPoint(ireactor.T, _sumFuel));
         }
     }
 }

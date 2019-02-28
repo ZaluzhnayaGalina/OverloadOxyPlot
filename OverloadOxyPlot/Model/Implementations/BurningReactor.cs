@@ -14,9 +14,9 @@ namespace OverloadOxyPlot.Model.Implementations
 
         private const int MaxAssembliesCount = 1670;
         private double _eAverage;
-        public static double a2 = 0.06;
-        public static double m = 0.2;
-        public static double besselConst = 2.405;
+        public static double A2 = 0.06;
+        public static double M = 0.2;
+        public static double BesselConst = 2.405;
         public double A;
         public double EAverage
         {
@@ -46,7 +46,7 @@ namespace OverloadOxyPlot.Model.Implementations
             { return _mef; }
             set
             {
-                if (_mef == value)
+                if (Math.Abs(_mef - value) < 1e-5)
                     return;
                 _mef = value;
                 OnPropertyChanged();
@@ -69,11 +69,6 @@ namespace OverloadOxyPlot.Model.Implementations
         {
             var j1 = (int)Math.Ceiling(assemblies.E1 / DeltaE);
             var j2 = (int)Math.Ceiling(assemblies.E2 / DeltaE);
-            double sum = 0;
-            for (int j = j1; j <= j2; j++)
-            {
-                sum += NArray[j];
-            }
             {
                 for (int j = j1; j <= j2; j++)
                 {
@@ -131,12 +126,12 @@ namespace OverloadOxyPlot.Model.Implementations
             }
             Protocol.Add(NArray);
             int j = 0;
-            double E_av = NArray.Sum(x => x * DeltaE * j++) / NArray.Sum();
-            A = (K0 - KAverage) / E_av;
+            double eAv = NArray.Sum(x => x * DeltaE * j++) / NArray.Sum();
+            A = (K0 - KAverage) / eAv;
             j = 0;
             var kinf = NArray.Sum(x => x * (K0 - A * DeltaE * j++)) / NArray.Sum();
-            var r = Math.Sqrt(a2 * AssembliesCount / Math.PI);
-            Mef = kinf / (1 + Math.Pow(m * 2.405 / r, 2.0));
+            var r = Math.Sqrt(A2 * AssembliesCount / Math.PI);
+            Mef = kinf / (1 + Math.Pow(M * 2.405 / r, 2.0));
         }
 
 
@@ -164,10 +159,11 @@ namespace OverloadOxyPlot.Model.Implementations
                             ((W0 - B * j * DeltaE) / DeltaE * (-prev[j] + prev[j - 1]) + B * prev[j]);
                     NArray.Add(n);
                 }
+
+                Protocol.Add(NArray);
             }
             Fuel();
             CalcEAverage();
-            Protocol.Add(NArray);
         }
 
         public void Fuel()
@@ -190,17 +186,17 @@ namespace OverloadOxyPlot.Model.Implementations
             }
             int j = 0;
             double kinf = NArray.Sum(x => x * (K0 - A * DeltaE * j++)) / NArray.Sum();
-            double r = Math.Sqrt(a2 * AssembliesCount / Math.PI);
-            double keff = kinf / (1 + Math.Pow(m * besselConst / r, 2.0));
+            double r = Math.Sqrt(A2 * AssembliesCount / Math.PI);
+            double keff = kinf / (1 + Math.Pow(M * BesselConst / r, 2.0));
             while (keff < 1.0125)
             {
-                const double minFreshCount = 0.001;
+                const double minFreshCount = 0.01;
                 Insert(new Assemblies(minFreshCount, 0.0, 1));
-                fuel += 0.001;
+                fuel += minFreshCount;
                 j = 0;
                 kinf = NArray.Sum(x => x * (K0 - A * DeltaE * j++)) / NArray.Sum();
-                r = Math.Sqrt(a2 * AssembliesCount / Math.PI);
-                keff = kinf / (1 + Math.Pow(m * besselConst / r, 2.0));
+                r = Math.Sqrt(A2 * AssembliesCount / Math.PI);
+                keff = kinf / (1 + Math.Pow(M * BesselConst / r, 2.0));
 
             }
             Mef = keff;

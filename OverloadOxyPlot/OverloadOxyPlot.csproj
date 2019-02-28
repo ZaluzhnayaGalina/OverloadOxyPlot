@@ -67,6 +67,7 @@
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Graphics\Implementations\CustomGraphic.cs" />
     <Compile Include="Graphics\Implementations\FuelGraphic.cs" />
+    <Compile Include="Graphics\Implementations\SumFuelGraphic.cs" />
     <Compile Include="Graphics\Interfaces\IDataGetter.cs" />
     <Compile Include="Graphics\Interfaces\IGraphic.cs" />
     <Compile Include="Graphics\Implementations\SpectrumGraphic.cs" />
