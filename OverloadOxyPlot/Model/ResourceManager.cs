@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace OverloadOxyPlot.Model
 {
-    class Record
+    class ResourceManager
     {
-        public List<double> NArray { get; set; }
-        double Time { get; set; }
-        string Comment { get; set; }
+        public IList<DataPoint> ResidualResource { get; set; }
+        private IReactor _reactor;
+
     }
 }

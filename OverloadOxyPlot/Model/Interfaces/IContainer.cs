@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OverloadOxyPlot.Model
+namespace OverloadOxyPlot.Model.Interfaces
 {
     /// <summary>
     ///  Интерфейс контейнера с ТВС

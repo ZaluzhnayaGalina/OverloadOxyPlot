@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace OverloadOxyPlot
+namespace OverloadOxyPlot.Views
 {
     /// <summary>
-    /// Interaction logic for ScenarioSettings.xaml
+    /// Interaction logic for ReactorControl.xaml
     /// </summary>
-    public partial class ScenarioSettings : Window
+    public partial class ReactorControl : UserControl
     {
-        public ScenarioSettings()
+        public ReactorControl()
         {
             InitializeComponent();
         }
