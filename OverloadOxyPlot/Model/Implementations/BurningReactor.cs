@@ -161,7 +161,7 @@ namespace OverloadOxyPlot.Model.Implementations
                 var n = prev[j] + DeltaT * ((W0 - B * j * DeltaE) / DeltaE * (-prev[j] + prev[j - 1]) + B * prev[j]);
                 NArray.Add(n);
             }
-            Fuel();
+            //Fuel();
             CalcEAverage();
             Protocol.Add(NArray);
         }

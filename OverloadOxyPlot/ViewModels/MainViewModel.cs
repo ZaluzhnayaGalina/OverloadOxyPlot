@@ -28,6 +28,7 @@ namespace OverloadOxyPlot.ViewModels
         public ReactorViewModel StoppedReactorViewModel { get; set; }
         public ICommand ScenarioSettingsCommand { get; set; }
         public ICommand RunCommand { get; set; }
+        public  ICommand BurnCommand { get; set; }
         private IScenario _scenario;
         private ScenarioCreator _scenarioCreator;
         private Cursor _cursor;
@@ -47,12 +48,25 @@ namespace OverloadOxyPlot.ViewModels
             var reactor = new BurningReactor();
             var stoppedReactor = new StoppedReactor();
             AssembliesList = new ObservableCollection<Assemblies>();
-            ReactorViewModel = new ReactorViewModel(reactor, assemblies => AssembliesList.Add(assemblies)){ReactorName = "Работающий реактор"};
-            StoppedReactorViewModel = new ReactorViewModel(stoppedReactor, assemblies => AssembliesList.Add(assemblies)) { ReactorName = "Остановленный реактор" };
+            ReactorViewModel = new ReactorViewModel(reactor, assemblies => AssembliesList.Add(assemblies)){ReactorName = "Работающий реактор", InsertingAssemblies = Assemblies};
+            StoppedReactorViewModel = new ReactorViewModel(stoppedReactor, assemblies => AssembliesList.Add(assemblies)) { ReactorName = "Остановленный реактор", InsertingAssemblies = Assemblies };
             _scenarioCreator = new ScenarioCreator { Count = 2, DeltaE = 50, Days = 300, ScenarioType = ScenarioTypes.MinToMax};
             ScenarioSettingsCommand = new BaseCommand(ShowScenarioSettings);
+            BurnCommand = new BaseCommand(Burn);
             RunCommand = new BaseCommand(RunScenario);
             
+        }
+
+        private void Burn(object obj)
+        {
+            for (int i = 0; i < 1/ReactorViewModel.Reactor.DeltaT; i++)
+            {
+                ReactorViewModel.Reactor.Burn();
+                StoppedReactorViewModel.Reactor.Burn();
+
+            }
+            ReactorViewModel.Reactor.Fuel();
+            StoppedReactorViewModel.Reactor.Fuel();
         }
 
         private void RunScenario(object obj)

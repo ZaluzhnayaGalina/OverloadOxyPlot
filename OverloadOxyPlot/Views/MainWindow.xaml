@@ -74,7 +74,7 @@
                             </ScrollViewer>
                         </StackPanel>
                     </Grid>
-                    <views:ReactorControl Grid.Column="2" DataContext="{Binding ReactorViewModel}"/>
+                    <views:ReactorControl Grid.Row="0" Grid.Column="2" DataContext="{Binding ReactorViewModel}"/>
                     <!--<StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" HorizontalAlignment="Center">-->
                     <Button Content="Сутки" Command="{Binding BurnCommand}" HorizontalAlignment="Center"  Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"/>
                     <!--<Button Content="Настроить скрипт..." Command="{Binding ScenarioSettingsCommand}" HorizontalAlignment="Center"/>-->
