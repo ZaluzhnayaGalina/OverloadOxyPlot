@@ -21,6 +21,8 @@ namespace OverloadOxyPlot.ViewModels
                 if (value==_assemblies)
                     return;
                 _assemblies = value;
+                ReactorViewModel.InsertingAssemblies = _assemblies;
+                StoppedReactorViewModel.InsertingAssemblies = _assemblies;
                 OnPropertyChanged();
             }
         }
@@ -48,8 +50,8 @@ namespace OverloadOxyPlot.ViewModels
             var reactor = new BurningReactor();
             var stoppedReactor = new StoppedReactor();
             AssembliesList = new ObservableCollection<Assemblies>();
-            ReactorViewModel = new ReactorViewModel(reactor, assemblies => AssembliesList.Add(assemblies)){ReactorName = "Работающий реактор", InsertingAssemblies = Assemblies};
-            StoppedReactorViewModel = new ReactorViewModel(stoppedReactor, assemblies => AssembliesList.Add(assemblies)) { ReactorName = "Остановленный реактор", InsertingAssemblies = Assemblies };
+            ReactorViewModel = new ReactorViewModel(reactor, assemblies =>  AssembliesList.Add(assemblies), assemblies=>AssembliesList.Remove(Assemblies)){ReactorName = "Работающий реактор"};
+            StoppedReactorViewModel = new ReactorViewModel(stoppedReactor, assemblies => AssembliesList.Add(assemblies), assemblies => AssembliesList.Remove(Assemblies)) { ReactorName = "Остановленный реактор"};
             _scenarioCreator = new ScenarioCreator { Count = 2, DeltaE = 50, Days = 300, ScenarioType = ScenarioTypes.MinToMax};
             ScenarioSettingsCommand = new BaseCommand(ShowScenarioSettings);
             BurnCommand = new BaseCommand(Burn);

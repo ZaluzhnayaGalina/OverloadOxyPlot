@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using OverloadOxyPlot.Model;
+﻿using OverloadOxyPlot.Model;
 using OverloadOxyPlot.Model.Interfaces;
 
 namespace OverloadOxyPlot.Scenario
@@ -11,15 +10,6 @@ namespace OverloadOxyPlot.Scenario
         public double Count { get ; set ; }
         public double DeltaE { get; set ; }
         public int Days { get; set; }
-        private string _description = "Попеременная перегрузка";
-        public string Description
-        {
-            get =>_description;
-            set
-            {
-                _description = value;
-            }
-        }
 
         public ScenarioAlt(IReactor reactor, IReactor stoppedReactor)
         {

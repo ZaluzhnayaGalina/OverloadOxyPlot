@@ -20,9 +20,10 @@ namespace OverloadOxyPlot.ViewModels
         public Assemblies InsertingAssemblies { get; set; }
         public Assemblies RemovingAssemblies { get; set; }
         private Action<Assemblies> _removeAction;
+        private Action<Assemblies> _insertAction;
         private SpectrumGraphic _spectGraphic;
 
-        public ReactorViewModel(IReactor reactor, Action<Assemblies> removeAction)
+        public ReactorViewModel(IReactor reactor, Action<Assemblies> removeAction, Action<Assemblies> insertAction)
         {
             Reactor = reactor;
             _spectGraphic = new SpectrumGraphic();
@@ -38,12 +39,14 @@ namespace OverloadOxyPlot.ViewModels
             InsertAssembliesCommand = new BaseCommand(InsertAssemblies, o=>InsertingAssemblies!=null);
 
             _removeAction = removeAction;
+            _insertAction = insertAction;
 
         }
 
         private void InsertAssemblies(object obj)
         {
             Reactor.Insert(InsertingAssemblies);
+            _insertAction(InsertingAssemblies);
             _spectGraphic.GetData(Reactor, null);
         }
 
