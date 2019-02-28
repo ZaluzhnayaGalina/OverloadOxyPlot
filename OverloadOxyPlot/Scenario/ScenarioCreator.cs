@@ -53,9 +53,9 @@ namespace OverloadOxyPlot.Scenario
         public IScenario CreateScenario(IReactor reactor, IReactor stoppedReactor)
         {
             if(ScenarioType == ScenarioTypes.Alt)
-                return new ScenarioAlt(reactor, stoppedReactor);
+                return new ScenarioAlt(reactor, stoppedReactor){Count = Count, Days = Days, DeltaE = DeltaE};
             if(ScenarioType==ScenarioTypes.MinToMax)
-                return new ScenarioMinToMax(reactor, new StoppedReactor());
+                return new ScenarioMinToMax(reactor, stoppedReactor) { Count = Count, Days = Days, DeltaE = DeltaE };
             return null;
         }
         public event PropertyChangedEventHandler PropertyChanged;

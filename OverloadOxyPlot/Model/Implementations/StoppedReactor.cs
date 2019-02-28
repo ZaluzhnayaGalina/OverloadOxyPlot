@@ -62,16 +62,18 @@ namespace OverloadOxyPlot.Model.Implementations
         public double K0 { get; set; }
         public List<double> QArray { get; set; }
         public double Mef { get; set; }
-        EventHandler<DayEventArgs> IReactor.DayPassed { get; set; }
+        public event DayEvent DayPassed;
         public int T { get; set; }
 
         public void Burn()
         {
+            T += 1;
+            Fuel();
         }
 
         public void Fuel()
         {
-            T += 1;
+            DayPassed?.Invoke(this,new DayEventArgs(0, NArray));
         }
 
         public StoppedReactor()

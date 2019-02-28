@@ -3,7 +3,7 @@ using OverloadOxyPlot.Model.Interfaces;
 
 namespace OverloadOxyPlot.Scenario
 {
-    class ScenarioMinToMax : IScenario
+    public class ScenarioMinToMax : IScenario
     {
         private IReactor _reactor;
         private IReactor _stoppedReactor;
@@ -27,13 +27,9 @@ namespace OverloadOxyPlot.Scenario
                 a.E2 = a.E1 + DeltaE;
                 var a1 = _stoppedReactor.Remove(a);
                 _reactor.Insert(a1);
-                for (int j = 0; j < 1.0 / _reactor.DeltaT; j++)
-                {
-                    _reactor.Burn();
-                    _stoppedReactor.Burn();
-                }
-                _reactor.Fuel();
-                _stoppedReactor.Fuel();
+                _reactor.Burn();
+                _stoppedReactor.Burn();
+
             }
         }
     }

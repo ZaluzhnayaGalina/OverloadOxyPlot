@@ -26,10 +26,11 @@ namespace OverloadOxyPlot.ViewModels
         {
             Reactor = reactor;
             _spectGraphic = new SpectrumGraphic();
+            _spectGraphic.GetData(Reactor, null);
             SelectedGraphic = _spectGraphic;
             var fuelGraphic = new FuelGraphic();
             reactor.DayPassed += fuelGraphic.GetData;
-            _spectGraphic.GetData(Reactor);
+            reactor.DayPassed += _spectGraphic.GetData;
             InsertingAssemblies = new Assemblies(2,400,500);
             RemovingAssemblies = new Assemblies(4,2000,2200);
             Graphics = new ObservableCollection<IGraphic>{_spectGraphic, fuelGraphic};
@@ -43,14 +44,14 @@ namespace OverloadOxyPlot.ViewModels
         private void InsertAssemblies(object obj)
         {
             Reactor.Insert(InsertingAssemblies);
-            _spectGraphic.GetData(Reactor);
+            _spectGraphic.GetData(Reactor, null);
         }
 
         private void RemoveAssemblies(object obj)
         {
             var assemblies = Reactor.Remove(RemovingAssemblies);
-            _spectGraphic.GetData(Reactor);
             _removeAction(assemblies);
+            _spectGraphic.GetData(Reactor, null);
         }
     }
 }

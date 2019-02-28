@@ -6,15 +6,18 @@ using OxyPlot;
 
 namespace OverloadOxyPlot.Graphics.Implementations
 {
-    public class SpectrumGraphic: IGraphic
+    public class SpectrumGraphic: IGraphic, IDataGetter
     { 
         public IList<DataPoint> Points { get; set; } = new ObservableCollection<DataPoint>();
 
-        public void GetData(IReactor reactor)
+        public void GetData(object reactor, DayEventArgs eventArgs)
         {
+            var ireactor = reactor as IReactor;
+            if (ireactor is null)
+                return;
             Points.Clear();
-            for (int j = 0; j < reactor.NArray.Count; j++)
-                Points.Add(new DataPoint(j * reactor.DeltaE, reactor.NArray[j]));
+            for (int j = 0; j < ireactor.NArray.Count; j++)
+                Points.Add(new DataPoint(j * ireactor.DeltaE, ireactor.NArray[j]));
         }
     }
 }

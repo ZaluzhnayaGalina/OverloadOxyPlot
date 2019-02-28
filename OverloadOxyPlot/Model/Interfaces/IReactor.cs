@@ -17,8 +17,9 @@ namespace OverloadOxyPlot.Model.Interfaces
         void Burn();
         void Fuel();
         int T { get; set; }
-        EventHandler<DayEventArgs> DayPassed { get; set; }
-        
+        event DayEvent DayPassed;
+      
+
     }
     public class DayEventArgs : EventArgs
     {
@@ -30,4 +31,6 @@ namespace OverloadOxyPlot.Model.Interfaces
             N = new List<double>(n);
         }
     }
+
+    public delegate void DayEvent(object obj, DayEventArgs args);
 }

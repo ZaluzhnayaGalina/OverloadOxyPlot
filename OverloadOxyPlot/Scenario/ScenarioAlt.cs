@@ -60,14 +60,9 @@ namespace OverloadOxyPlot.Scenario
 
                     _reactor.Insert(a1);
                 }
-                for (int j = 0; j < 1.0 / _reactor.DeltaT; j++)
-                {
-                    _reactor.Burn();
-                    _stoppedReactor.Burn();
-                }
+                _reactor.Burn();
+                _stoppedReactor.Burn();
                 tmp = !tmp;
-                _reactor.Fuel();
-                _stoppedReactor.Fuel();
             }
         }
     }

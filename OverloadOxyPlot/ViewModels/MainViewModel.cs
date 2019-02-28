@@ -59,18 +59,14 @@ namespace OverloadOxyPlot.ViewModels
 
         private void Burn(object obj)
         {
-            for (int i = 0; i < 1/ReactorViewModel.Reactor.DeltaT; i++)
-            {
-                ReactorViewModel.Reactor.Burn();
-                StoppedReactorViewModel.Reactor.Burn();
+            ReactorViewModel.Reactor.Burn();
+            StoppedReactorViewModel.Reactor.Burn();
 
-            }
-            ReactorViewModel.Reactor.Fuel();
-            StoppedReactorViewModel.Reactor.Fuel();
         }
 
         private void RunScenario(object obj)
         {
+            _scenario = _scenarioCreator.CreateScenario(ReactorViewModel.Reactor, StoppedReactorViewModel.Reactor);
             Cursor = Cursors.Wait;
             _scenario.Run();
             Cursor = Cursors.Arrow;
@@ -80,7 +76,7 @@ namespace OverloadOxyPlot.ViewModels
         private void ShowScenarioSettings(object obj)
         {
             (new ScenarioSettings {DataContext = _scenarioCreator}).ShowDialog();
-            _scenario = _scenarioCreator.CreateScenario(ReactorViewModel.Reactor, StoppedReactorViewModel.Reactor);
+            
         }
     }  
 }

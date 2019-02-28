@@ -53,7 +53,7 @@ namespace OverloadOxyPlot.Model.Implementations
             }
         }
 
-        public EventHandler<DayEventArgs> DayPassed { get ; set; }
+        public event DayEvent DayPassed;
         public int T { get; set; }
 
         private double _mef;
@@ -153,15 +153,19 @@ namespace OverloadOxyPlot.Model.Implementations
 
         public void Burn()
         {
-            var prev = Protocol.Last();
-            int nArrayCount = NArray.Count;
-            NArray = new List<double> { 0 };
-            for (int j = 1; j < nArrayCount; j++)
+            for (int i = 0; i < 1.0 / DeltaT; i++)
             {
-                var n = prev[j] + DeltaT * ((W0 - B * j * DeltaE) / DeltaE * (-prev[j] + prev[j - 1]) + B * prev[j]);
-                NArray.Add(n);
+                var prev = Protocol.Last();
+                int nArrayCount = NArray.Count;
+                NArray = new List<double> {0};
+                for (int j = 1; j < nArrayCount; j++)
+                {
+                    var n = prev[j] + DeltaT *
+                            ((W0 - B * j * DeltaE) / DeltaE * (-prev[j] + prev[j - 1]) + B * prev[j]);
+                    NArray.Add(n);
+                }
             }
-            //Fuel();
+            Fuel();
             CalcEAverage();
             Protocol.Add(NArray);
         }
