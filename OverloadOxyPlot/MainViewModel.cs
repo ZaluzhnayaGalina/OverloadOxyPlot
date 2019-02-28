@@ -1,18 +1,6 @@
-﻿using System;
-using OverloadOxyPlot.Model;
-using System.Windows.Input;
-using System.Windows.Forms;
+﻿using OverloadOxyPlot.Model;
 using MVVMTools;
-using OxyPlot;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using OverloadOxyPlot.Graphics;
-using OverloadOxyPlot.Graphics.Implementations;
-using OverloadOxyPlot.Graphics.Interfaces;
-using OxyPlot.Wpf;
-using OverloadOxyPlot.Scenario;
-using OverloadOxyPlot.Model.Interfaces;
-using OverloadOxyPlot.Model.Implementations;
 
 namespace OverloadOxyPlot
 {
@@ -21,151 +9,17 @@ namespace OverloadOxyPlot
         public IList<Assemblies> AssembliesList { get; set; }
         private Assemblies _assemblies;
         public Assemblies Assemblies
-        { get
-            {
-                return _assemblies;
-            }
+        {
+            get => _assemblies;
             set
             {
                 if (value==_assemblies)
                     return;
                 _assemblies = value;
-                ((BaseCommand)InsertCommand).RaiseCanExcuteChanged();
-                ((BaseCommand)StoppedReactorInsertCommand).RaiseCanExcuteChanged();
                 OnPropertyChanged();
             }
         }
 
-        private ICommand _burnCommand;
-        private ICommand _removeCommand;
-        private ICommand _insertCommand;
-        private ICommand _stoppedReactorRemoveCommand;
-        private ICommand _stoppedReactorInsertCommand;
-        private ICommand _scenarioSettingsCommand;
-        private ICommand _runCommand;
-        private ICommand _savePlotCommand;
-        private System.Windows.Input.Cursor _cursor;
-        private IScenario _scenario;
-        public IScenario Scenario
-        {
-            get => _scenario;
-            set
-            {
-                _scenario = value;
-            }
-        }
-        public IReactor Reactor { get; set; }
-        public IReactor StoppedReactor { get; set; }
-        public ICommand StoppedReactorRemoveCommand => _stoppedReactorRemoveCommand ?? (_stoppedReactorRemoveCommand = new BaseCommand(StoppedReactorRemove));
-        public ICommand StoppedReactorInsertCommand => _stoppedReactorInsertCommand ?? (_stoppedReactorInsertCommand = new BaseCommand(StoppedReactorInsert, InsertPossible));
-        public ICommand ScenarioSettingsCommand => _scenarioSettingsCommand ?? (_scenarioSettingsCommand = new BaseCommand(ScenarioSet));
-        public ICommand RunCommand => _runCommand ?? (_runCommand = new BaseCommand(RunScenario));
-        public ICommand SavePlotCommand=>_savePlotCommand ?? (_savePlotCommand = new BaseCommand(SavePlot));
-
-        private void SavePlot(object obj)
-        {
-            var model = obj as PlotModel;
-            if (model is null)
-                return;
-            var fd = new SaveFileDialog();
-            fd.ShowDialog();
-            if (fd.FileName is null || String.IsNullOrEmpty(fd.FileName))
-                return;
-            var pngExporter = new PngExporter { Width = 600, Height = 400, Background = OxyColors.White };
-            pngExporter.ExportToFile(model,fd.FileName);
-        }
-
-        public System.Windows.Input.Cursor Cursor
-        {
-            get=>_cursor;
-            set
-            {
-                if (value == _cursor)
-                    return;
-                _cursor = value;
-                OnPropertyChanged();
-            }
-        }
-
-
-        private void RunScenario(object obj)
-        {
-            _scenario.Run();            
-        }
-
-        private void ScenarioSet(object obj)
-        {
-            var view = new ScenarioSettings { DataContext = _scenario};
-            view.ShowDialog();
-        }
-
-        private bool InsertPossible(object obj)
-        {
-            return Assemblies != null;
-        }
-
-        private void StoppedReactorInsert(object obj)
-        {
-            StoppedReactor.Insert(Assemblies);
-            AssembliesList.Remove(Assemblies);;
-        }
-
-        private void StoppedReactorRemove(object obj)
-        {
-            AssembliesList.Add(StoppedReactor.Remove(StoppedReactorAssemblies));
-        }
-
-        public ICommand RemoveCommand => _removeCommand ?? (_removeCommand = new BaseCommand(Remove));
-
-        private void Remove(object obj)
-        {
-            AssembliesList.Add(Reactor.Remove(BurningReactorAssemblies));
-        }
-
-        public ICommand InsertCommand => _insertCommand ?? (_insertCommand = new BaseCommand(Insert, InsertPossible));
-
-        private void Insert(object obj)
-        {
-            Reactor.Insert(Assemblies);
-            AssembliesList.Remove(Assemblies);
-        }
-
-        
-        public ICommand BurnCommand => _burnCommand ?? (_burnCommand = new BaseCommand(Burn));
-
-        private void Burn(object obj)
-        {
-            for (int i = 0; i < 1.0 / Reactor.DeltaT; i++)
-            {
-                Reactor.Burn();
-                StoppedReactor.Burn();
-            }
-            Reactor.Fuel();
-            StoppedReactor.Fuel();
-        }
-
-        public IGraphic SpectrumGraphic1 { get; set; }
-        public IGraphic SpectrumGraphic2 { get; set; }
-        public MainViewModel()
-        {
-            Reactor = new BurningReactor();
-            StoppedReactor = new StoppedReactor();
-
-            SpectrumGraphic1 = new SpectrumGraphic();
-            StoppedReactor.DayPassed += SpectrumGraphic1.GetData;
-
-            SpectrumGraphic2 = new SpectrumGraphic();
-            Reactor.DayPassed += SpectrumGraphic2.GetData;
-
-            AssembliesList = new ObservableCollection<Assemblies>();
-            StoppedReactorAssemblies = new Assemblies(1.0, 400.0,500.0);
-            BurningReactorAssemblies = new Assemblies(2.0, 2000.0, 2500.0);
-            Assemblies = new Assemblies();
-
-            Scenarios = new ObservableCollection<IScenario>();
-            Scenarios.Add(new ScenarioMinToMax(Reactor, StoppedReactor));
-            Scenarios.Add(new ScenarioAlt(Reactor, StoppedReactor));
-        }
 
     }  
 }

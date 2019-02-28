@@ -1,6 +1,6 @@
 ﻿namespace OverloadOxyPlot.Scenario
 {
-    interface IScenario
+    public interface IScenario
     {
         double Count { get; set; }
         double DeltaE { get; set; }
