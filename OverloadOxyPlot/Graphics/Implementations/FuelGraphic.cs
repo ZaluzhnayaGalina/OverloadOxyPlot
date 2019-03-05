@@ -17,5 +17,10 @@ namespace OverloadOxyPlot.Graphics.Implementations
                 return;
             Points.Add(new DataPoint(ireactor.T, eventArgs.Fuel));
         }
+
+        public override string ToString()
+        {
+            return "Подпитка свежим топливом в зависимости от времени";
+        }
     }
 }

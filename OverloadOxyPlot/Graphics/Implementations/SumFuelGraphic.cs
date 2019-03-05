@@ -19,5 +19,10 @@ namespace OverloadOxyPlot.Graphics.Implementations
             _sumFuel += eventArgs.Fuel;
             Points.Add(new DataPoint(ireactor.T, _sumFuel));
         }
+
+        public override string ToString()
+        {
+            return "Суммарная подпитка свежим топливом";
+        }
     }
 }

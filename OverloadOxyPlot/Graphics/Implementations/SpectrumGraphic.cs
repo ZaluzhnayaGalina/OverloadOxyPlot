@@ -19,5 +19,10 @@ namespace OverloadOxyPlot.Graphics.Implementations
             for (int j = 0; j < ireactor.NArray.Count; j++)
                 Points.Add(new DataPoint(j * ireactor.DeltaE, ireactor.NArray[j]));
         }
+
+        public override string ToString()
+        {
+            return "Спектр ТВС";
+        }
     }
 }
