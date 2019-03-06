@@ -8,9 +8,6 @@ namespace OverloadOxyPlot.Model.Interfaces
         double W0 { get; set; }
         double B { get; set; }
         double Q0 { get; set; }
-
-        double KAverage { get; set; }
-        double K0 { get; set; }
         double Mef { get; set; }
         double Em { get; set; }
         void DayPass();

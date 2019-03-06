@@ -18,8 +18,7 @@ namespace OverloadOxyPlot.Model.Implementations
         public double AssembliesCount => NArray.Sum() * DeltaE;
         public List<double> NArray { get; set; }
         public double DeltaE { get; set; }
-        public double KAverage { get; set; }
-        public double K0 { get; set; }
+
         public double DeltaT { get; set; }
         public List<List<double>> Protocol { get; set; }
 
@@ -95,8 +94,6 @@ namespace OverloadOxyPlot.Model.Implementations
             //AssembliesCount = 1600;
             Em = 2800;
             W0 = 3;
-            KAverage = 1.02;
-            K0 = 1.2;
             double N = 1660.0;
             const double wMin = 1.5;
             B = (W0 - wMin) / Em;

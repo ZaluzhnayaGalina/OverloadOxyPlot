@@ -12,14 +12,18 @@ namespace OverloadOxyPlot.Model.Implementations
         public static double A2 = 0.06;
         public static double M = 0.2;
         public static double BesselConst = 2.405;
+        public double KAverage { get; set; }
+        public double K0 { get; set; }
         public BurnBehavior(IReactor burningReactor)
         {
+            KAverage = 1.02;
+            K0 = 1.2;
             _burningReactor = burningReactor;
             int j = 0;
             double eAv = _burningReactor.NArray.Sum(x => x * _burningReactor.DeltaE * j++) / _burningReactor.NArray.Sum();
-            A = (_burningReactor.K0 - _burningReactor.KAverage) / eAv;
+            A = (K0 - KAverage) / eAv;
             j = 0;
-            var kinf = _burningReactor.NArray.Sum(x => x * (_burningReactor.K0 - A * _burningReactor.DeltaE * j++)) / _burningReactor.NArray.Sum();
+            var kinf = _burningReactor.NArray.Sum(x => x * (K0 - A * _burningReactor.DeltaE * j++)) / _burningReactor.NArray.Sum();
             var r = Math.Sqrt(A2 * _burningReactor.AssembliesCount / Math.PI);
             _burningReactor.Mef = kinf / (1 + Math.Pow(M * 2.405 / r, 2.0));
         }
@@ -51,7 +55,7 @@ namespace OverloadOxyPlot.Model.Implementations
                 RemoveBurntAssemblies(a);
             }
             int j = 0;
-            double kinf = _burningReactor.NArray.Sum(x => x * (_burningReactor.K0 - A * _burningReactor.DeltaE * j++)) / _burningReactor.NArray.Sum();
+            double kinf = _burningReactor.NArray.Sum(x => x * (K0 - A * _burningReactor.DeltaE * j++)) / _burningReactor.NArray.Sum();
             double r = Math.Sqrt(A2 * _burningReactor.AssembliesCount / Math.PI);
             double keff = kinf / (1 + Math.Pow(M * BesselConst / r, 2.0));
             const double minFreshCount = 0.001;
@@ -61,7 +65,7 @@ namespace OverloadOxyPlot.Model.Implementations
                 _burningReactor.Insert(freshAssemblies);
                 fuel += minFreshCount;
                 j = 0;
-                kinf = _burningReactor.NArray.Sum(x => x * (_burningReactor.K0 - A * _burningReactor.DeltaE * j++)) / _burningReactor.NArray.Sum();
+                kinf = _burningReactor.NArray.Sum(x => x * (K0 - A * _burningReactor.DeltaE * j++)) / _burningReactor.NArray.Sum();
                 r = Math.Sqrt(A2 * _burningReactor.AssembliesCount / Math.PI);
                 keff = kinf / (1 + Math.Pow(M * BesselConst / r, 2.0));
 
