@@ -45,29 +45,20 @@ namespace OverloadOxyPlot.Model.Implementations
         public double Fuel()
         {
             var fuel = 0.0;
+            var a = new Assemblies();
             while (_burningReactor.AssembliesCount >= MaxAssembliesCount)
             {
-                var a = new Assemblies();
-                for (int k = _burningReactor.NArray.Count - 1; k >= 0; k--)
-                {
-                    if (Math.Abs(_burningReactor.NArray[k]) > 0.01)
-                    {
-                        a.E2 = k * _burningReactor.DeltaE;
-                        break;
-                    }
-                }
-                a.E1 = a.E2 - 1;
-                a.Count = 0.001;
-                _burningReactor.Remove(a);
+                RemoveBurntAssemblies(a);
             }
             int j = 0;
             double kinf = _burningReactor.NArray.Sum(x => x * (_burningReactor.K0 - A * _burningReactor.DeltaE * j++)) / _burningReactor.NArray.Sum();
             double r = Math.Sqrt(A2 * _burningReactor.AssembliesCount / Math.PI);
             double keff = kinf / (1 + Math.Pow(M * BesselConst / r, 2.0));
+            const double minFreshCount = 0.001;
+            var freshAssemblies = new Assemblies(minFreshCount, 0.0, 1);
             while (keff < 1.0125)
             {
-                const double minFreshCount = 0.001;
-                _burningReactor.Insert(new Assemblies(minFreshCount, 0.0, 1));
+                _burningReactor.Insert(freshAssemblies);
                 fuel += minFreshCount;
                 j = 0;
                 kinf = _burningReactor.NArray.Sum(x => x * (_burningReactor.K0 - A * _burningReactor.DeltaE * j++)) / _burningReactor.NArray.Sum();
@@ -79,6 +70,22 @@ namespace OverloadOxyPlot.Model.Implementations
             _burningReactor.T += 1;
             return fuel;
         }
+
+        private void RemoveBurntAssemblies(Assemblies a)
+        {
+            for (int k = _burningReactor.NArray.Count - 1; k >= 0; k--)
+            {
+                if (Math.Abs(_burningReactor.NArray[k]) > 0.01)
+                {
+                    a.E2 = k * _burningReactor.DeltaE;
+                    break;
+                }
+            }
+            a.E1 = a.E2 - 1;
+            a.Count = 0.001;
+            _burningReactor.Remove(a);
+        }
+
         public double MaxAssembliesCount = 1670;
     }
 }

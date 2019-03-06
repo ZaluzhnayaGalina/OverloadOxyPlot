@@ -23,7 +23,7 @@ namespace OverloadOxyPlot.Scenario
             bool tmp = true;
             for (int i = 0; i < Days; i++)
             {
-                if (_reactor.AssembliesCount + Count < 1668)
+                if (_reactor.AssembliesCount + Count < 1670)
                 {
                     a.Count = Count;
                     if (tmp)
