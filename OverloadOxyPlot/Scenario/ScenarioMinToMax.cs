@@ -27,8 +27,8 @@ namespace OverloadOxyPlot.Scenario
                 a.E2 = a.E1 + DeltaE;
                 var a1 = _stoppedReactor.Remove(a);
                 _reactor.Insert(a1);
-                _reactor.Burn();
-                _stoppedReactor.Burn();
+                _reactor.DayPass();
+                _stoppedReactor.DayPass();
 
             }
         }

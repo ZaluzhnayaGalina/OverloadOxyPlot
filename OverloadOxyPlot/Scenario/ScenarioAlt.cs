@@ -50,8 +50,8 @@ namespace OverloadOxyPlot.Scenario
 
                     _reactor.Insert(a1);
                 }
-                _reactor.Burn();
-                _stoppedReactor.Burn();
+                _reactor.DayPass();
+                _stoppedReactor.DayPass();
                 tmp = !tmp;
             }
         }

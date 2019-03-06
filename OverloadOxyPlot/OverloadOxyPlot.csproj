@@ -72,7 +72,10 @@
     <Compile Include="Graphics\Interfaces\IGraphic.cs" />
     <Compile Include="Graphics\Implementations\SpectrumGraphic.cs" />
     <Compile Include="Model\Assemblies.cs" />
-    <Compile Include="Model\Implementations\BurningReactor.cs" />
+    <Compile Include="Model\Implementations\BurnBehavior.cs" />
+    <Compile Include="Model\Implementations\NonBurnBehavior.cs" />
+    <Compile Include="Model\Implementations\Reactor.cs" />
+    <Compile Include="Model\Interfaces\IBurnBehavior.cs" />
     <Compile Include="Scenario\IScenario.cs" />
     <Compile Include="Model\Interfaces\IContainer.cs" />
     <Compile Include="Model\Interfaces\IReactor.cs" />
@@ -115,7 +118,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\Implementations\StoppedReactor.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

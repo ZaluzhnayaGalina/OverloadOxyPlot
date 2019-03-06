@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using MVVMTools;
+using OverloadOxyPlot.Graphics.Implementations;
 using OverloadOxyPlot.Model;
 using OverloadOxyPlot.Model.Implementations;
 using OverloadOxyPlot.Scenario;
@@ -47,10 +48,14 @@ namespace OverloadOxyPlot.ViewModels
 
         public MainViewModel()
         {
-            var reactor = new BurningReactor();
-            var stoppedReactor = new StoppedReactor();
+            var reactor = new Reactor();
+            reactor.BurnBehavior = new BurnBehavior(reactor);
+            var stoppedReactor = new Reactor();
+            stoppedReactor.BurnBehavior = new NonBurnBehavior(stoppedReactor);
             AssembliesList = new ObservableCollection<Assemblies>();
             ReactorViewModel = new ReactorViewModel(reactor, assemblies =>  AssembliesList.Add(assemblies), assemblies=>AssembliesList.Remove(Assemblies)){ReactorName = "Работающий реактор"};
+            ReactorViewModel.AddGraphic(new FuelGraphic());
+            ReactorViewModel.AddGraphic(new SumFuelGraphic());
             StoppedReactorViewModel = new ReactorViewModel(stoppedReactor, assemblies => AssembliesList.Add(assemblies), assemblies => AssembliesList.Remove(Assemblies)) { ReactorName = "Остановленный реактор"};
             _scenarioCreator = new ScenarioCreator { Count = 2, DeltaE = 50, Days = 300, ScenarioType = ScenarioTypes.MinToMax};
             ScenarioSettingsCommand = new BaseCommand(ShowScenarioSettings);
@@ -61,8 +66,8 @@ namespace OverloadOxyPlot.ViewModels
 
         private void Burn(object obj)
         {
-            ReactorViewModel.Reactor.Burn();
-            StoppedReactorViewModel.Reactor.Burn();
+            ReactorViewModel.Reactor.DayPass();
+            StoppedReactorViewModel.Reactor.DayPass();
 
         }
 

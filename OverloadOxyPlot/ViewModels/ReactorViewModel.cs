@@ -29,22 +29,22 @@ namespace OverloadOxyPlot.ViewModels
             _spectGraphic = new SpectrumGraphic();
             _spectGraphic.GetData(Reactor, null);
             SelectedGraphic = _spectGraphic;
-            var fuelGraphic = new FuelGraphic();
-            var sumFuelGraphic = new SumFuelGraphic();
-            reactor.DayPassed += fuelGraphic.GetData;
             reactor.DayPassed += _spectGraphic.GetData;
-            reactor.DayPassed += sumFuelGraphic.GetData;
-            InsertingAssemblies = new Assemblies(2,400,500);
-            RemovingAssemblies = new Assemblies(4,2000,2200);
-            Graphics = new ObservableCollection<IGraphic>{_spectGraphic, fuelGraphic, sumFuelGraphic};
-            RemoveAssembliesCommand = new BaseCommand(RemoveAssemblies, o => RemovingAssemblies!=null);
-            InsertAssembliesCommand = new BaseCommand(InsertAssemblies, o=>InsertingAssemblies!=null);
-
+            Graphics = new ObservableCollection<IGraphic> { _spectGraphic };
+            RemoveAssembliesCommand = new BaseCommand(RemoveAssemblies, o => RemovingAssemblies != null);
+            InsertAssembliesCommand = new BaseCommand(InsertAssemblies, o => InsertingAssemblies != null);
             _removeAction = removeAction;
             _insertAction = insertAction;
-
+            InsertingAssemblies = new Assemblies(2, 400, 500);
+            RemovingAssemblies = new Assemblies(4, 2000, 2200);
         }
 
+        public void AddGraphic<T>(T graphic) where T : IGraphic, IDataGetter
+        {
+            Reactor.DayPassed += graphic.GetData;
+            Graphics.Add(graphic);
+
+        }
         private void InsertAssemblies(object obj)
         {
             Reactor.Insert(InsertingAssemblies);

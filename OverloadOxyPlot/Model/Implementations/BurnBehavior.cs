@@ -1,0 +1,84 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using OverloadOxyPlot.Model.Interfaces;
+
+namespace OverloadOxyPlot.Model.Implementations
+{
+    public class BurnBehavior: IBurnBehavior
+    {
+        private readonly IReactor _burningReactor;
+        public double A;
+        public static double A2 = 0.06;
+        public static double M = 0.2;
+        public static double BesselConst = 2.405;
+        public BurnBehavior(IReactor burningReactor)
+        {
+            _burningReactor = burningReactor;
+            int j = 0;
+            double eAv = _burningReactor.NArray.Sum(x => x * _burningReactor.DeltaE * j++) / _burningReactor.NArray.Sum();
+            A = (_burningReactor.K0 - _burningReactor.KAverage) / eAv;
+            j = 0;
+            var kinf = _burningReactor.NArray.Sum(x => x * (_burningReactor.K0 - A * _burningReactor.DeltaE * j++)) / _burningReactor.NArray.Sum();
+            var r = Math.Sqrt(A2 * _burningReactor.AssembliesCount / Math.PI);
+            _burningReactor.Mef = kinf / (1 + Math.Pow(M * 2.405 / r, 2.0));
+        }
+
+        public void Burn()
+        {
+            for (int i = 0; i < 1.0 / _burningReactor.DeltaT; i++)
+            {
+                var prev = _burningReactor.Protocol.Last();
+                int nArrayCount = _burningReactor.NArray.Count;
+                _burningReactor.NArray = new List<double> {0};
+                for (int j = 1; j < nArrayCount; j++)
+                {
+                    var n = prev[j] + _burningReactor.DeltaT *
+                            ((_burningReactor.W0 - _burningReactor.B * j * _burningReactor.DeltaE) / _burningReactor.DeltaE * (-prev[j] + prev[j - 1]) + _burningReactor.B * prev[j]);
+                    _burningReactor.NArray.Add(n);
+                }
+
+                _burningReactor.Protocol.Add(_burningReactor.NArray);
+            }
+        }
+
+        public double Fuel()
+        {
+            var fuel = 0.0;
+            while (_burningReactor.AssembliesCount >= MaxAssembliesCount)
+            {
+                var a = new Assemblies();
+                for (int k = _burningReactor.NArray.Count - 1; k >= 0; k--)
+                {
+                    if (Math.Abs(_burningReactor.NArray[k]) > 0.01)
+                    {
+                        a.E2 = k * _burningReactor.DeltaE;
+                        break;
+                    }
+                }
+                a.E1 = a.E2 - 1;
+                a.Count = 0.001;
+                _burningReactor.Remove(a);
+            }
+            int j = 0;
+            double kinf = _burningReactor.NArray.Sum(x => x * (_burningReactor.K0 - A * _burningReactor.DeltaE * j++)) / _burningReactor.NArray.Sum();
+            double r = Math.Sqrt(A2 * _burningReactor.AssembliesCount / Math.PI);
+            double keff = kinf / (1 + Math.Pow(M * BesselConst / r, 2.0));
+            while (keff < 1.0125)
+            {
+                const double minFreshCount = 0.001;
+                _burningReactor.Insert(new Assemblies(minFreshCount, 0.0, 1));
+                fuel += minFreshCount;
+                j = 0;
+                kinf = _burningReactor.NArray.Sum(x => x * (_burningReactor.K0 - A * _burningReactor.DeltaE * j++)) / _burningReactor.NArray.Sum();
+                r = Math.Sqrt(A2 * _burningReactor.AssembliesCount / Math.PI);
+                keff = kinf / (1 + Math.Pow(M * BesselConst / r, 2.0));
+
+            }
+            _burningReactor.Mef = keff;
+            _burningReactor.T += 1;
+            return fuel;
+        }
+        public double MaxAssembliesCount = 1670;
+    }
+}

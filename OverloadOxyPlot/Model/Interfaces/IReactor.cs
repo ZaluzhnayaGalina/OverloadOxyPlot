@@ -13,9 +13,8 @@ namespace OverloadOxyPlot.Model.Interfaces
         double K0 { get; set; }
         double Mef { get; set; }
         double Em { get; set; }
-        List<double> QArray { get; set; }
-        void Burn();
-        void Fuel();
+        void DayPass();
+        IBurnBehavior BurnBehavior { get; set; }
         int T { get; set; }
         event DayEvent DayPassed;
       
