@@ -1,9 +1,13 @@
 ﻿<Application x:Class="OverloadOxyPlot.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:OverloadOxyPlot"
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
-         <ResourceDictionary Source="Views/Style.xaml"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Views/Brushes.xaml"/>
+                <ResourceDictionary Source="Views/Style.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
