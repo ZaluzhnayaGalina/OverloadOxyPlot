@@ -28,17 +28,19 @@
         <TabControl Grid.Row="1">
             <TabItem Header="Реакторы">
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
+
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <views:ReactorControl Grid.Column="0" DataContext="{Binding StoppedReactorViewModel}"/>
-                    <Grid Grid.Row="0" Grid.Column="1">
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <views:ReactorControl Grid.Column="0" DataContext="{Binding StoppedReactorViewModel}"/>
+                        <Grid Grid.Row="0" Grid.Column="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
@@ -72,9 +74,9 @@
                             </ScrollViewer>
                         </StackPanel>
                     </Grid>
-                    <views:ReactorControl Grid.Row="0" Grid.Column="2" DataContext="{Binding ReactorViewModel}"/>
-                    <Button Content="Сутки" Command="{Binding BurnCommand}" HorizontalAlignment="Center"  Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"/>
-
+                        <views:ReactorControl Grid.Row="0" Grid.Column="2" DataContext="{Binding ReactorViewModel}"/>
+                    </Grid>
+                    <Button Content="Сутки" Command="{Binding BurnCommand}" Grid.Row="1"/>
                 </Grid>
             </TabItem>
             <!--<TabItem Header="Подпитка свежим топливом">
