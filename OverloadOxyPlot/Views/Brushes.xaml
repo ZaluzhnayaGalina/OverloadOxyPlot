@@ -13,6 +13,7 @@
     <Color x:Key="Color10">#FF6F00</Color>
     <Color x:Key="Color11">#000000</Color>
     <Color x:Key="Color12">#888888</Color>
+    <Color x:Key="Color13">#DDDDDD</Color>
     <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource Color0}"/>
     <SolidColorBrush x:Key="Brush1" Color="{StaticResource Color1}"/>
     <SolidColorBrush x:Key="Brush2" Color="{StaticResource Color2}"/>
@@ -20,10 +21,11 @@
     <SolidColorBrush x:Key="Brush4" Color="{StaticResource Color4}"/>
     <SolidColorBrush x:Key="Brush5" Color="{StaticResource Color5}"/>
     <SolidColorBrush x:Key="Brush6" Color="{StaticResource Color6}"/>
-    <SolidColorBrush x:Key="Brush7" Color="{StaticResource Color7}"/>
+    <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource Color7}"/>
     <SolidColorBrush x:Key="Brush8" Color="{StaticResource Color8}"/>
     <SolidColorBrush x:Key="Brush9" Color="{StaticResource Color9}"/>
     <SolidColorBrush x:Key="Brush10" Color="{StaticResource Color10}"/>
     <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Color11}"/>
     <SolidColorBrush x:Key="GrayBrush" Color="{StaticResource Color12}"/>
+    <SolidColorBrush x:Key="LightGrayBrush" Color="{StaticResource Color13}"/>
 </ResourceDictionary>
