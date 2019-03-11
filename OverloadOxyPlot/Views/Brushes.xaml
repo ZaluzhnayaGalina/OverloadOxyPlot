@@ -21,9 +21,9 @@
     <SolidColorBrush x:Key="Brush4" Color="{StaticResource Color4}"/>
     <SolidColorBrush x:Key="Brush5" Color="{StaticResource Color5}"/>
     <SolidColorBrush x:Key="Brush6" Color="{StaticResource Color6}"/>
-    <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource Color7}"/>
+    <SolidColorBrush x:Key="ControlBrush" Color="{StaticResource Color7}"/>
     <SolidColorBrush x:Key="Brush8" Color="{StaticResource Color8}"/>
-    <SolidColorBrush x:Key="Brush9" Color="{StaticResource Color9}"/>
+    <SolidColorBrush x:Key="MouseOverBrush" Color="{StaticResource Color9}"/>
     <SolidColorBrush x:Key="Brush10" Color="{StaticResource Color10}"/>
     <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Color11}"/>
     <SolidColorBrush x:Key="GrayBrush" Color="{StaticResource Color12}"/>

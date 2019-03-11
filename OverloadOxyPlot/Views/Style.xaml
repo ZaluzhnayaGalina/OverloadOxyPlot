@@ -13,7 +13,7 @@
     <Style TargetType="TextBlock" x:Key="TextBlockStyle">
         <Setter Property="Height" Value="25"></Setter>
         <Setter Property="Margin" Value="5"></Setter>
-        <Setter Property="Background" Value="{StaticResource BorderBrush}"></Setter>
+        <Setter Property="Background" Value="{StaticResource ControlBrush}"></Setter>
     </Style>
     <Style TargetType="Button">
         <Setter Property="Margin" Value="10"></Setter>
@@ -36,10 +36,11 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Brush9}"></Setter>
+                <Setter Property="Background" Value="{StaticResource MouseOverBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource WhiteBrush}"></Setter>
             </Trigger>
             <Trigger Property="IsMouseOver" Value="False">
-                <Setter Property="Background" Value="{StaticResource BorderBrush}"></Setter>
+                <Setter Property="Background" Value="{StaticResource ControlBrush}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -63,8 +64,8 @@
                 x:Name="Border" 
                 Grid.ColumnSpan="2"
                 CornerRadius="0"
-                Background="{StaticResource BorderBrush}"
-                BorderBrush="{StaticResource BorderBrush}"
+                Background="{StaticResource ControlBrush}"
+                BorderBrush="{StaticResource ControlBrush}"
                 BorderThickness="1" />
             <Border 
                 Grid.Column="0"
@@ -83,7 +84,7 @@
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="ToggleButton.IsMouseOver" Value="true">
-                <Setter TargetName="Border" Property="Background" Value="{StaticResource Brush9}" />
+                <Setter TargetName="Border" Property="Background" Value="{StaticResource MouseOverBrush}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter TargetName="Border" Property="Background" Value="#EEEEEE" />
@@ -198,7 +199,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsHighlighted" Value="true">
-                            <Setter TargetName="Border" Property="Background" Value="{StaticResource BorderBrush}"/>
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource ControlBrush}"/>
                             <Setter Property="Foreground" Value="{StaticResource WhiteBrush}"></Setter>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
@@ -217,7 +218,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Menu}">
-                    <Border BorderThickness="1" BorderBrush="{StaticResource BorderBrush}" Background="{StaticResource Brush5}">
+                    <Border BorderThickness="1" BorderBrush="{StaticResource ControlBrush}" Background="{StaticResource ControlBrush}">
                         <StackPanel ClipToBounds="True"
                                     Orientation="Horizontal"
                                     IsItemsHost="True" />
@@ -235,7 +236,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Separator}">
-                    <Border BorderThickness="1" BorderBrush="{StaticResource BorderBrush}">
+                    <Border BorderThickness="1" BorderBrush="{StaticResource ControlBrush}">
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -260,7 +261,7 @@
                             SnapsToDevicePixels="True"
                             BorderThickness="1"
                             Background="{StaticResource WhiteBrush}"
-                            BorderBrush="{StaticResource BorderBrush}">
+                            BorderBrush="{StaticResource ControlBrush}">
                         <ScrollViewer CanContentScroll="True"
                                      >
                             <StackPanel IsItemsHost="True"
@@ -284,7 +285,7 @@
                         Value="Transparent" />
                 <Setter Property="Background"
                         TargetName="Border"
-                        Value="{StaticResource BorderBrush}"/>
+                        Value="{StaticResource ControlBrush}"/>
             </Trigger>
             <Trigger SourceName="Popup"
                      Property="AllowsTransparency"
@@ -310,14 +311,16 @@
             <Grid>
                 <ContentPresenter Margin="6,3,6,3"
                                   ContentSource="Header"
-                                  RecognizesAccessKey="True" />
+                                  RecognizesAccessKey="True"
+                                  />
             </Grid>
         </Border>
         <ControlTemplate.Triggers>
             <Trigger Property="IsHighlighted"
                      Value="true">
                 <Setter Property="Background"
-                        TargetName="Border" Value="{StaticResource Brush9}"/>
+                        TargetName="Border" Value="{StaticResource ControlBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource WhiteBrush}"/>
             </Trigger>
             <Trigger Property="IsEnabled"
                      Value="False">
@@ -350,7 +353,7 @@
                         Visibility="Collapsed"
                         Margin="6,0,6,0"
                         BorderThickness="1"
-                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderBrush="{StaticResource ControlBrush}"
                         Background="{StaticResource WhiteBrush}">
                     <Path x:Name="CheckMark"
                           Width="7"
@@ -359,7 +362,7 @@
                           SnapsToDevicePixels="False"
                           StrokeThickness="2"
                           Data="M 0 0 L 7 7 M 0 7 L 7 0"
-                          Fill="{StaticResource Brush9}">
+                          Fill="{StaticResource ControlBrush}">
                     </Path>
                 </Border>
                 <ContentPresenter x:Name="HeaderHost"
@@ -400,10 +403,11 @@
             <Trigger Property="IsHighlighted"
                      Value="true">
                 <Setter Property="Background"
-                        TargetName="Border" Value="{StaticResource Brush9}"/>
+                        TargetName="Border" Value="{StaticResource ControlBrush}"/>
                 <Setter Property="BorderBrush"
                         TargetName="Border"
-                        Value="{StaticResource BorderBrush}"/>
+                        Value="{StaticResource ControlBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource WhiteBrush}"/>
             </Trigger>
             <Trigger Property="IsEnabled"
                      Value="false">
@@ -437,12 +441,13 @@
                            Grid.Column="2"
                            Text="{TemplateBinding InputGestureText}"
                            Margin="5,2,2,2"
-                           DockPanel.Dock="Right" />
+                           DockPanel.Dock="Right"
+                           Foreground="{StaticResource WhiteBrush}"/>
                 <Path Grid.Column="3"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
                       Data="M 0 0 L 0 7 L 4 3.5 Z"
-                      Fill="{StaticResource BorderBrush}">
+                      Fill="{StaticResource ControlBrush}">
                     
                 </Path>
                 <Popup x:Name="Popup"
@@ -456,7 +461,7 @@
                             SnapsToDevicePixels="True"
                             Background="{StaticResource WhiteBrush}"
                             BorderThickness="1"
-                            BorderBrush="{StaticResource BorderBrush}">
+                            BorderBrush="{StaticResource ControlBrush}">
                         <ScrollViewer CanContentScroll="True"
                                       >
                             <StackPanel IsItemsHost="True"
@@ -477,11 +482,12 @@
                      Value="true">
                 <Setter Property="Background"
                         TargetName="Border"
-                        Value="{StaticResource Brush9}"/>
+                        Value="{StaticResource ControlBrush}"/>
                 <Setter Property="BorderBrush"
                         TargetName="Border"
-                        Value="{StaticResource BorderBrush}">
+                        Value="{StaticResource ControlBrush}">
                 </Setter>
+                <Setter Property="Foreground" Value="{StaticResource WhiteBrush}"/>
             </Trigger>
             <Trigger SourceName="Popup"
                      Property="AllowsTransparency"
@@ -530,8 +536,6 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    <!--ScrollViewer for a MenuItem-->
-    <MenuScrollingVisibilityConverter x:Key="MenuScrollingVisibilityConverter" />
 
 
 </ResourceDictionary>
