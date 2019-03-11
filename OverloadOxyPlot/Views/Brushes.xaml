@@ -13,6 +13,6 @@
     <Color x:Key="Color10">#FF6F00</Color>
     <Color x:Key="Color11">#000000</Color>
     <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource Color1}"/>
-    <SolidColorBrush x:Key="ControlBrush" Color="{StaticResource Color2}"/>
-    <SolidColorBrush x:Key="ShadowBrush" Color="{StaticResource Color3}"></SolidColorBrush>
+    <SolidColorBrush x:Key="ControlBrush" Color="{StaticResource Color5}"/>
+    <SolidColorBrush x:Key="ShadowBrush" Color="{StaticResource Color6}"></SolidColorBrush>
 </ResourceDictionary>
