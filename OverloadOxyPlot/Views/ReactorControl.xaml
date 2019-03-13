@@ -12,30 +12,32 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <ComboBox ItemsSource="{Binding Graphics}" SelectedItem="{Binding SelectedGraphic}"></ComboBox>
-        <oxy:Plot Grid.Row="1" Title="{Binding ReactorName}" ToolTip="{Binding Reactor.Mef}">
+        <ComboBox ItemsSource="{Binding Graphics}" SelectedItem="{Binding SelectedGraphic}"/>
+        <oxy:Plot x:Name="Plot" Grid.Row="1" Title="{Binding ReactorName}"
+                  ClipToBounds="True">
             <oxy:Plot.Series>
-                <oxy:LineSeries ItemsSource="{Binding SelectedGraphic.Points}"/>
+                <oxy:LineSeries ItemsSource="{Binding SelectedGraphic.Points}" StrokeThickness="5" Background="White"/>
             </oxy:Plot.Series>
             <oxy:Plot.Axes>
                 <oxy:LinearAxis Minimum="0"/>
             </oxy:Plot.Axes>
         </oxy:Plot>
         <StackPanel
+            Margin="0,0,25,40"
             Orientation="Vertical" Grid.Row="1" 
-            HorizontalAlignment="Right" VerticalAlignment="Bottom"
-            Margin="0,200,0,0">
+            HorizontalAlignment="Right" VerticalAlignment="Bottom">
             <Label  Content="{Binding Reactor.AssembliesCount}" ContentStringFormat="Число ТВС: {0: ####.##}"/>
             <Label Content="{Binding Reactor.Mef}" ContentStringFormat="Кэфф: {0:#.####}"/>
         </StackPanel>
+
         <StackPanel VerticalAlignment="Center" Orientation="Vertical" Grid.Row="2">
             <Button Content="Извлечь" Command="{Binding RemoveAssembliesCommand}"/>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="E1: "/>
+                <Label Content="E1: "/>
                 <TextBox Text="{Binding RemovingAssemblies.E1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBlock Text="E2:"/>
+                <Label Content="E2:"/>
                 <TextBox Text="{Binding RemovingAssemblies.E2, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBlock Text="n:"/>
+                <Label Content="n:"/>
                 <TextBox Text="{Binding RemovingAssemblies.Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
             <Button Content="Вставить" Command="{Binding InsertAssembliesCommand}"/>
