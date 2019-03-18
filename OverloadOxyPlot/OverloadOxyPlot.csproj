@@ -67,10 +67,12 @@
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Graphics\Implementations\CustomGraphic.cs" />
     <Compile Include="Graphics\Implementations\FuelGraphic.cs" />
+    <Compile Include="Graphics\Implementations\FunctionalGraphic.cs" />
     <Compile Include="Graphics\Implementations\SumFuelGraphic.cs" />
     <Compile Include="Graphics\Interfaces\IDataGetter.cs" />
     <Compile Include="Graphics\Interfaces\IGraphic.cs" />
     <Compile Include="Graphics\Implementations\SpectrumGraphic.cs" />
+    <Compile Include="Graphics\Interfaces\ISystemDataGetter.cs" />
     <Compile Include="Model\Assemblies.cs" />
     <Compile Include="Model\Implementations\BurnBehavior.cs" />
     <Compile Include="Model\Implementations\NonBurnBehavior.cs" />
@@ -148,6 +150,8 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Events\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

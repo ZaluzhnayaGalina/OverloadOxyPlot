@@ -4,6 +4,6 @@ namespace OverloadOxyPlot.Graphics.Interfaces
 {
     public interface IDataGetter
     {
-        void GetData(object reactor, DayEventArgs eventArgs);
+        void GetData(object reactor, ReactorDayEventArgs eventArgs);
     }
 }

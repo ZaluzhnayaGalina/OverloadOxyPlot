@@ -1,4 +1,5 @@
-﻿using OverloadOxyPlot.Model;
+﻿using System.Collections.Generic;
+using OverloadOxyPlot.Model;
 using OverloadOxyPlot.Model.Interfaces;
 
 namespace OverloadOxyPlot.Scenario
@@ -19,7 +20,7 @@ namespace OverloadOxyPlot.Scenario
         public void Run()
         {
             Assemblies a = new Assemblies();
-            Assemblies a1 = new Assemblies();
+            Assemblies a1;
             bool tmp = true;
             for (int i = 0; i < Days; i++)
             {
@@ -52,8 +53,12 @@ namespace OverloadOxyPlot.Scenario
                 }
                 _reactor.DayPass();
                 _stoppedReactor.DayPass();
+                DayPassed?.Invoke(new SystemDayArgsEvents(Reactors, i));
                 tmp = !tmp;
             }
         }
+
+        public IList<IReactor> Reactors { get; set; }
+        public event DaySystemEvent DayPassed;
     }
 }

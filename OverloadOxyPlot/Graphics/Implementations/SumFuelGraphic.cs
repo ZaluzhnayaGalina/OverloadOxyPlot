@@ -11,12 +11,12 @@ namespace OverloadOxyPlot.Graphics.Implementations
         private double _sumFuel;
         public IList<DataPoint> Points { get; set; } = new ObservableCollection<DataPoint>();
 
-        public void GetData(object reactor, DayEventArgs eventArgs)
+        public void GetData(object reactor, ReactorDayEventArgs eventArgs)
         {
             var ireactor = reactor as IReactor;
             if (ireactor is null)
                 return;
-            _sumFuel += eventArgs.Fuel;
+            _sumFuel += ireactor.Fuel;
             Points.Add(new DataPoint(ireactor.T, _sumFuel));
         }
 

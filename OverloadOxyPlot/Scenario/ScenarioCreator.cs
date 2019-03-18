@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using OverloadOxyPlot.Annotations;
-using OverloadOxyPlot.Model.Implementations;
 using OverloadOxyPlot.Model.Interfaces;
 
 namespace OverloadOxyPlot.Scenario

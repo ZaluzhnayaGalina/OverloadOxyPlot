@@ -14,7 +14,7 @@ namespace OverloadOxyPlot.Model.Implementations
 
         public double W0 { get; set; }
         public double B { get; set; }
-        public double Q0 { get; set; }
+        public double Fuel { get; set; }
         public double AssembliesCount => NArray.Sum() * DeltaE;
         public List<double> NArray { get; set; }
         public double DeltaE { get; set; }
@@ -98,10 +98,10 @@ namespace OverloadOxyPlot.Model.Implementations
             const double wMin = 1.5;
             B = (W0 - wMin) / Em;
 
-            Q0 = B * N / Math.Log(W0 / wMin);
+            Fuel = B * N / Math.Log(W0 / wMin);
             for (int i = 0; i < Em / DeltaE; i++)
             {
-                NArray.Add(Q0 / (W0 - B * DeltaE * i));
+                NArray.Add(Fuel / (W0 - B * DeltaE * i));
             }
             Protocol.Add(NArray);
         }
@@ -109,8 +109,8 @@ namespace OverloadOxyPlot.Model.Implementations
         public void DayPass()
         {
             BurnBehavior.Burn();
-            var fuel = BurnBehavior.Fuel();
-            var fuelled = new DayEventArgs(fuel, NArray);
+            Fuel = BurnBehavior.Fuel();
+            var fuelled = new ReactorDayEventArgs(Fuel, NArray);
             DayPassed?.Invoke(this, fuelled);
         }
 

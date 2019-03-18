@@ -7,7 +7,7 @@ namespace OverloadOxyPlot.Model.Interfaces
     {
         double W0 { get; set; }
         double B { get; set; }
-        double Q0 { get; set; }
+        double Fuel { get; set; }
         double Mef { get; set; }
         double Em { get; set; }
         void DayPass();
@@ -17,16 +17,16 @@ namespace OverloadOxyPlot.Model.Interfaces
       
 
     }
-    public class DayEventArgs : EventArgs
+    public class ReactorDayEventArgs : EventArgs
     {
-        public double Fuel { get; private set; }
-        public List<double> N { get; private set; }
-        public DayEventArgs(double fuel, List<double> n)
+        public double Fuel { get; }
+        public List<double> N { get; }
+        public ReactorDayEventArgs(double fuel, List<double> n)
         {
             Fuel = fuel;
             N = new List<double>(n);
         }
     }
 
-    public delegate void DayEvent(object obj, DayEventArgs args);
+    public delegate void DayEvent(object obj, ReactorDayEventArgs args);
 }

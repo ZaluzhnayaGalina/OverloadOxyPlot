@@ -10,13 +10,13 @@ namespace OverloadOxyPlot.Graphics.Implementations
     class CustomGraphic : IGraphic, IDataGetter
     {
         public IList<DataPoint> Points { get; set; }
-        private Func<DayEventArgs, double> _function;
-        public CustomGraphic(Func<DayEventArgs,double> function)
+        private Func<ReactorDayEventArgs, double> _function;
+        public CustomGraphic(Func<ReactorDayEventArgs,double> function)
         {
             _function = function;
             Points = new ObservableCollection<DataPoint>();
         }
-        public void GetData(object reactor, DayEventArgs eventArgs)
+        public void GetData(object reactor, ReactorDayEventArgs eventArgs)
         {
             var ireactor = reactor as IReactor;
             if (ireactor is null)
