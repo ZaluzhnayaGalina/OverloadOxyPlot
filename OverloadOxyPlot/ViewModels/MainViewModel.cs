@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using MVVMTools;
 using OverloadOxyPlot.Graphics.Implementations;
+using OverloadOxyPlot.Graphics.Interfaces;
 using OverloadOxyPlot.Model;
 using OverloadOxyPlot.Model.Implementations;
 using OverloadOxyPlot.Scenario;
@@ -35,6 +36,7 @@ namespace OverloadOxyPlot.ViewModels
         private IScenario _scenario;
         private ScenarioCreator _scenarioCreator;
         private Cursor _cursor;
+        private FunctionalGraphic _fuelandResourcefraphic;
 
         public Cursor Cursor
         {
@@ -45,7 +47,8 @@ namespace OverloadOxyPlot.ViewModels
                 OnPropertyChanged();
             }
         }
-
+        public ObservableCollection<IGraphic> SystemGraphics { get; set; } = new ObservableCollection<IGraphic>();
+        public IGraphic SelectedGraphic { get; set; }
         public MainViewModel()
         {
             var reactor = new Reactor();
@@ -61,7 +64,9 @@ namespace OverloadOxyPlot.ViewModels
             ScenarioSettingsCommand = new BaseCommand(ShowScenarioSettings);
             BurnCommand = new BaseCommand(Burn);
             RunCommand = new BaseCommand(RunScenario);
-            
+            _fuelandResourcefraphic = new FunctionalGraphic();
+            SystemGraphics.Add(_fuelandResourcefraphic);
+            SelectedGraphic = _fuelandResourcefraphic;
         }
 
         private void Burn(object obj)
@@ -74,9 +79,11 @@ namespace OverloadOxyPlot.ViewModels
         private void RunScenario(object obj)
         {
             _scenario = _scenarioCreator.CreateScenario(ReactorViewModel.Reactor, StoppedReactorViewModel.Reactor);
+            _scenario.DayPassed += _fuelandResourcefraphic.GetData;
             Cursor = Cursors.Wait;
             _scenario.Run();
             Cursor = Cursors.Arrow;
+            _scenario.DayPassed += _fuelandResourcefraphic.GetData;
 
         }
 

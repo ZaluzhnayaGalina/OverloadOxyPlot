@@ -16,6 +16,9 @@ namespace OverloadOxyPlot.Scenario
         {
             _reactor = reactor;
             _stoppedReactor = stoppedReactor;
+            Reactors = new List<IReactor>();
+            Reactors.Add(reactor);
+            Reactors.Add(stoppedReactor);
         }
 
         public void Run()
@@ -30,7 +33,7 @@ namespace OverloadOxyPlot.Scenario
                 _reactor.Insert(a1);
                 _reactor.DayPass();
                 _stoppedReactor.DayPass();
-                DayPassed?.Invoke(null);
+                DayPassed?.Invoke( new SystemDayArgsEvents(Reactors, i));
 
             }
         }

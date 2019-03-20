@@ -16,6 +16,9 @@ namespace OverloadOxyPlot.Scenario
         {
             _reactor = reactor;
             _stoppedReactor = stoppedReactor;
+            Reactors = new List<IReactor>();
+            Reactors.Add(reactor);
+            Reactors.Add(stoppedReactor);
         }
         public void Run()
         {
