@@ -4,13 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:oxy="http://oxyplot.org/wpf"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800"
+             >
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+            <RowDefinition MinHeight="380"/>
+            <RowDefinition />
         </Grid.RowDefinitions>
         <ComboBox ItemsSource="{Binding Graphics}" SelectedItem="{Binding SelectedGraphic}"/>
         <oxy:Plot x:Name="Plot" Grid.Row="1" Title="{Binding ReactorName}"

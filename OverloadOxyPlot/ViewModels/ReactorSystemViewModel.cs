@@ -11,15 +11,28 @@ namespace OverloadOxyPlot.ViewModels
     {
         public IList<ReactorViewModel> ReactorViewModels { get; set; }
         public ReactorSystem ReactorSystem { get; }
-        private IGraphic _fuelandResourcefraphic;
+        private FunctionalGraphic _fuelAndResourceGraphic;
         public ReactorSystemViewModel(ReactorSystem reactorSystem)
         {
             ReactorSystem = reactorSystem;
             ReactorViewModels = new ObservableCollection<ReactorViewModel>();
+            int i = 1;
             AssembliesList = new ObservableCollection<Assemblies>();
-            _fuelandResourcefraphic = new FunctionalGraphic();
-            SystemGraphics.Add(_fuelandResourcefraphic);
-            SelectedGraphic = _fuelandResourcefraphic;
+            foreach (var reactor in ReactorSystem.Reactors)
+            {
+                var reactorViewModel = new ReactorViewModel(reactor,
+                    assemblies => AssembliesList.Add(assemblies), assemblies => AssembliesList.Remove(Assemblies));
+                reactorViewModel.ReactorName = "Реактор " + i.ToString("D");
+                reactorViewModel.AddGraphic(new FuelGraphic());
+                reactorViewModel.AddGraphic(new SumFuelGraphic());
+                i++;
+                ReactorViewModels.Add(reactorViewModel);
+            }
+            
+            _fuelAndResourceGraphic = new FunctionalGraphic();
+            ReactorSystem.DayPassed += _fuelAndResourceGraphic.GetData;
+            SystemGraphics.Add(_fuelAndResourceGraphic);
+            SelectedGraphic = _fuelAndResourceGraphic;
         }
         public IList<Assemblies> AssembliesList { get; set; }
         private Assemblies _assemblies;

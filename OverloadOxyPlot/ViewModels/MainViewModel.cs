@@ -13,23 +13,7 @@ namespace OverloadOxyPlot.ViewModels
 {
     internal class MainViewModel : BaseNotifyPropertyChanged
     {
-        public IList<Assemblies> AssembliesList { get; set; }
-        private Assemblies _assemblies;
-        public Assemblies Assemblies
-        {
-            get => _assemblies;
-            set
-            {
-                if (value==_assemblies)
-                    return;
-                _assemblies = value;
-                ReactorViewModel.InsertingAssemblies = _assemblies;
-                StoppedReactorViewModel.InsertingAssemblies = _assemblies;
-                OnPropertyChanged();
-            }
-        }
-        public ReactorViewModel ReactorViewModel { get; set; }
-        public ReactorViewModel StoppedReactorViewModel { get; set; }
+        public ReactorSystemViewModel ReactorSystemViewModel { get; set; }
         private ReactorSystem _reactorSystem;
         public ICommand ScenarioSettingsCommand { get; set; }
         public ICommand RunCommand { get; set; }
@@ -37,7 +21,6 @@ namespace OverloadOxyPlot.ViewModels
         private IScenario _scenario;
         private ScenarioCreator _scenarioCreator;
         private Cursor _cursor;
-        private FunctionalGraphic _fuelAndResourcefraphic;
 
         public Cursor Cursor
         {
@@ -48,8 +31,7 @@ namespace OverloadOxyPlot.ViewModels
                 OnPropertyChanged();
             }
         }
-        public ObservableCollection<IGraphic> SystemGraphics { get; set; } = new ObservableCollection<IGraphic>();
-        public IGraphic SelectedGraphic { get; set; }
+       
         public MainViewModel()
         {
             var reactor = new Reactor();
@@ -60,37 +42,25 @@ namespace OverloadOxyPlot.ViewModels
             _reactorSystem.Reactors.Add(reactor);
             _reactorSystem.Reactors.Add(stoppedReactor);
 
-            AssembliesList = new ObservableCollection<Assemblies>();
-            ReactorViewModel = new ReactorViewModel(reactor, assemblies =>  AssembliesList.Add(assemblies), assemblies=>AssembliesList.Remove(Assemblies)){ReactorName = "Работающий реактор"};
-            ReactorViewModel.AddGraphic(new FuelGraphic());
-            ReactorViewModel.AddGraphic(new SumFuelGraphic());
-            StoppedReactorViewModel = new ReactorViewModel(stoppedReactor, assemblies => AssembliesList.Add(assemblies), assemblies => AssembliesList.Remove(Assemblies)) { ReactorName = "Остановленный реактор"};
             _scenarioCreator = new ScenarioCreator { Count = 2, DeltaE = 50, Days = 300, ScenarioType = ScenarioTypes.MinToMax};
             ScenarioSettingsCommand = new BaseCommand(ShowScenarioSettings);
             BurnCommand = new BaseCommand(Burn);
             RunCommand = new BaseCommand(RunScenario);
 
-            _fuelAndResourcefraphic = new FunctionalGraphic();
-            SystemGraphics.Add(_fuelAndResourcefraphic);
-            SelectedGraphic = _fuelAndResourcefraphic;
-            _reactorSystem.DayPassed += _fuelAndResourcefraphic.GetData;
+            ReactorSystemViewModel = new ReactorSystemViewModel(_reactorSystem);
         }
 
         private void Burn(object obj)
         {
-            ReactorViewModel.Reactor.DayPass();
-            StoppedReactorViewModel.Reactor.DayPass();
-
+            _reactorSystem.DayPass();
         }
 
         private void RunScenario(object obj)
         {
             _scenario = _scenarioCreator.CreateScenario(_reactorSystem);
-            _scenario.DayPassed += _fuelAndResourcefraphic.GetData;
             Cursor = Cursors.Wait;
             _scenario.Run();
             Cursor = Cursors.Arrow;
-            _scenario.DayPassed += _fuelAndResourcefraphic.GetData;
 
         }
 

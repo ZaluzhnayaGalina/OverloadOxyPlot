@@ -11,7 +11,6 @@ namespace OverloadOxyPlot.Scenario
         int Days { get; set; }
         void Run();
         IList<IReactor> Reactors { get; set; }
-        event DaySystemEvent DayPassed;
     }
 }
 

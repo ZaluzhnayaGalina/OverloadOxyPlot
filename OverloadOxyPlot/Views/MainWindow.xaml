@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:model="clr-namespace:OverloadOxyPlot.Model"
         xmlns:viewModels="clr-namespace:OverloadOxyPlot.ViewModels"
-        xmlns:views="clr-namespace:OverloadOxyPlot.Views"
         xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:views="clr-namespace:OverloadOxyPlot.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="Auto" Width="Auto"
         WindowState="Maximized"
@@ -29,26 +29,39 @@
         <TabControl Grid.Row="1">
             <TabItem Header="Реакторы">
                 <Grid>
-
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
+                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <views:ReactorControl Grid.Column="0" DataContext="{Binding StoppedReactorViewModel}"/>
+                        <ListView
+                                 Grid.Column="0" ItemsSource="{Binding ReactorSystemViewModel.ReactorViewModels}"
+                            >
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid/>
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <views:ReactorControl DataContext="{Binding}"/>
+                                </DataTemplate>                                
+                            </ListView.ItemTemplate>
+                        </ListView>
                         <Grid Grid.Row="0" Grid.Column="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel Orientation="Vertical" Grid.Row="0" MinWidth="200">
-                            <Label Content="Хранилище"></Label>
-                            <ScrollViewer >
+                            <StackPanel Orientation="Vertical" MinWidth="200">
+                                <Label Content="Хранилище"/>
+                                <ScrollViewer DataContext="{Binding ReactorSystemViewModel}">
                                 <ListView ItemsSource="{Binding AssembliesList, Mode=TwoWay}" x:Name="Container"
                                           ScrollViewer.VerticalScrollBarVisibility="Visible"
                                           SelectedItem="{Binding Assemblies}" SelectionMode="Single" Background="#EDE7F6">
@@ -74,14 +87,13 @@
                                 </ListView>
                             </ScrollViewer>
                         </StackPanel>
-                    </Grid>
-                        <views:ReactorControl Grid.Row="0" Grid.Column="2" DataContext="{Binding ReactorViewModel}"/>
+                        </Grid>                       
                     </Grid>
                     <Button Content="Сутки" Command="{Binding BurnCommand}" Grid.Row="1"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Системные графики">
-                <Grid>
+                <Grid DataContext="{Binding  ReactorSystemViewModel}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
