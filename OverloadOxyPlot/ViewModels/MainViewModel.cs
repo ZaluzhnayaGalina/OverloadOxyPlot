@@ -30,13 +30,14 @@ namespace OverloadOxyPlot.ViewModels
         }
         public ReactorViewModel ReactorViewModel { get; set; }
         public ReactorViewModel StoppedReactorViewModel { get; set; }
+        private ReactorSystem _reactorSystem;
         public ICommand ScenarioSettingsCommand { get; set; }
         public ICommand RunCommand { get; set; }
         public  ICommand BurnCommand { get; set; }
         private IScenario _scenario;
         private ScenarioCreator _scenarioCreator;
         private Cursor _cursor;
-        private FunctionalGraphic _fuelandResourcefraphic;
+        private FunctionalGraphic _fuelAndResourcefraphic;
 
         public Cursor Cursor
         {
@@ -55,6 +56,10 @@ namespace OverloadOxyPlot.ViewModels
             reactor.BurnBehavior = new BurnBehavior(reactor);
             var stoppedReactor = new Reactor();
             stoppedReactor.BurnBehavior = new NonBurnBehavior(stoppedReactor);
+            _reactorSystem = new ReactorSystem();
+            _reactorSystem.Reactors.Add(reactor);
+            _reactorSystem.Reactors.Add(stoppedReactor);
+
             AssembliesList = new ObservableCollection<Assemblies>();
             ReactorViewModel = new ReactorViewModel(reactor, assemblies =>  AssembliesList.Add(assemblies), assemblies=>AssembliesList.Remove(Assemblies)){ReactorName = "Работающий реактор"};
             ReactorViewModel.AddGraphic(new FuelGraphic());
@@ -64,9 +69,11 @@ namespace OverloadOxyPlot.ViewModels
             ScenarioSettingsCommand = new BaseCommand(ShowScenarioSettings);
             BurnCommand = new BaseCommand(Burn);
             RunCommand = new BaseCommand(RunScenario);
-            _fuelandResourcefraphic = new FunctionalGraphic();
-            SystemGraphics.Add(_fuelandResourcefraphic);
-            SelectedGraphic = _fuelandResourcefraphic;
+
+            _fuelAndResourcefraphic = new FunctionalGraphic();
+            SystemGraphics.Add(_fuelAndResourcefraphic);
+            SelectedGraphic = _fuelAndResourcefraphic;
+            _reactorSystem.DayPassed += _fuelAndResourcefraphic.GetData;
         }
 
         private void Burn(object obj)
@@ -78,12 +85,12 @@ namespace OverloadOxyPlot.ViewModels
 
         private void RunScenario(object obj)
         {
-            _scenario = _scenarioCreator.CreateScenario(ReactorViewModel.Reactor, StoppedReactorViewModel.Reactor);
-            _scenario.DayPassed += _fuelandResourcefraphic.GetData;
+            _scenario = _scenarioCreator.CreateScenario(_reactorSystem);
+            _scenario.DayPassed += _fuelAndResourcefraphic.GetData;
             Cursor = Cursors.Wait;
             _scenario.Run();
             Cursor = Cursors.Arrow;
-            _scenario.DayPassed += _fuelandResourcefraphic.GetData;
+            _scenario.DayPassed += _fuelAndResourcefraphic.GetData;
 
         }
 

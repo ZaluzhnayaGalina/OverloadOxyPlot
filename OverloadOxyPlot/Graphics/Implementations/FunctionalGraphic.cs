@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using OverloadOxyPlot.Graphics.Interfaces;
-using OverloadOxyPlot.Scenario;
+using OverloadOxyPlot.Model;
 using OxyPlot;
 
 namespace OverloadOxyPlot.Graphics.Implementations
@@ -10,7 +10,7 @@ namespace OverloadOxyPlot.Graphics.Implementations
     class FunctionalGraphic: IGraphic, ISystemDataGetter
     {
         public IList<DataPoint> Points { get; set; } = new ObservableCollection<DataPoint>();
-        public void GetData(SystemDayArgsEvents eventArgs)
+        public void GetData(SystemDayArgsEvent eventArgs)
         {
             var reactors = eventArgs.Reactors;
             double y = 0;

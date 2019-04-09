@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using OverloadOxyPlot.Annotations;
+using OverloadOxyPlot.Model;
 using OverloadOxyPlot.Model.Interfaces;
 
 namespace OverloadOxyPlot.Scenario
@@ -49,12 +50,12 @@ namespace OverloadOxyPlot.Scenario
         }
         public  ScenarioTypes ScenarioType { get; set; }
 
-        public IScenario CreateScenario(IReactor reactor, IReactor stoppedReactor)
+        public IScenario CreateScenario(ReactorSystem reactorSystem)
         {
             if(ScenarioType == ScenarioTypes.Alt)
-                return new ScenarioAlt(reactor, stoppedReactor){Count = Count, Days = Days, DeltaE = DeltaE};
+                return new ScenarioAlt(reactorSystem) {Count = Count, Days = Days, DeltaE = DeltaE};
             if(ScenarioType==ScenarioTypes.MinToMax)
-                return new ScenarioMinToMax(reactor, stoppedReactor) { Count = Count, Days = Days, DeltaE = DeltaE };
+                return new ScenarioMinToMax(reactorSystem) { Count = Count, Days = Days, DeltaE = DeltaE };
             return null;
         }
         public event PropertyChangedEventHandler PropertyChanged;

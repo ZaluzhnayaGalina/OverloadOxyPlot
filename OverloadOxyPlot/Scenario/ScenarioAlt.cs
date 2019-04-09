@@ -8,17 +8,16 @@ namespace OverloadOxyPlot.Scenario
     {
         private IReactor _reactor;
         private IReactor _stoppedReactor;
+        private ReactorSystem _reactorSystem;
         public double Count { get ; set ; }
         public double DeltaE { get; set ; }
         public int Days { get; set; }
 
-        public ScenarioAlt(IReactor reactor, IReactor stoppedReactor)
+        public ScenarioAlt(ReactorSystem reactorSystem)
         {
-            _reactor = reactor;
-            _stoppedReactor = stoppedReactor;
-            Reactors = new List<IReactor>();
-            Reactors.Add(reactor);
-            Reactors.Add(stoppedReactor);
+            _stoppedReactor = reactorSystem.Reactors[0];
+            _reactor = reactorSystem.Reactors[1];
+            _reactorSystem = reactorSystem;
         }
         public void Run()
         {
@@ -54,9 +53,7 @@ namespace OverloadOxyPlot.Scenario
 
                     _reactor.Insert(a1);
                 }
-                _reactor.DayPass();
-                _stoppedReactor.DayPass();
-                DayPassed?.Invoke(new SystemDayArgsEvents(Reactors, i));
+                _reactorSystem.DayPass();
                 tmp = !tmp;
             }
         }

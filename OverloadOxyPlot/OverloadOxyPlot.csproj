@@ -78,12 +78,14 @@
     <Compile Include="Model\Implementations\NonBurnBehavior.cs" />
     <Compile Include="Model\Implementations\Reactor.cs" />
     <Compile Include="Model\Interfaces\IBurnBehavior.cs" />
+    <Compile Include="Model\ReactorSystem.cs" />
     <Compile Include="Scenario\IScenario.cs" />
     <Compile Include="Model\Interfaces\IContainer.cs" />
     <Compile Include="Model\Interfaces\IReactor.cs" />
     <Compile Include="Scenario\ScenarioAlt.cs" />
     <Compile Include="Scenario\ScenarioCreator.cs" />
     <Compile Include="Scenario\ScenarioMinToMax.cs" />
+    <Compile Include="ViewModels\ReactorSystemViewModel.cs" />
     <Compile Include="Views\ScenarioSettings.xaml.cs">
       <DependentUpon>ScenarioSettings.xaml</DependentUpon>
     </Compile>
