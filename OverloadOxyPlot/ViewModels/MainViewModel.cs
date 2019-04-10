@@ -39,8 +39,9 @@ namespace OverloadOxyPlot.ViewModels
             var stoppedReactor = new Reactor();
             stoppedReactor.BurnBehavior = new NonBurnBehavior(stoppedReactor);
             _reactorSystem = new ReactorSystem();
-            _reactorSystem.Reactors.Add(reactor);
             _reactorSystem.Reactors.Add(stoppedReactor);
+            _reactorSystem.Reactors.Add(reactor);
+            
 
             _scenarioCreator = new ScenarioCreator { Count = 2, DeltaE = 50, Days = 300, ScenarioType = ScenarioTypes.MinToMax};
             ScenarioSettingsCommand = new BaseCommand(ShowScenarioSettings);

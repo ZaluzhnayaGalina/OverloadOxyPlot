@@ -58,7 +58,7 @@ namespace OverloadOxyPlot.Model.Implementations
             double kinf = _burningReactor.NArray.Sum(x => x * (K0 - A * _burningReactor.DeltaE * j++)) / _burningReactor.NArray.Sum();
             double r = Math.Sqrt(A2 * _burningReactor.AssembliesCount / Math.PI);
             double keff = kinf / (1 + Math.Pow(M * BesselConst / r, 2.0));
-            const double minFreshCount = 0.001;
+            const double minFreshCount = 0.01;
             var freshAssemblies = new Assemblies(minFreshCount, 0.0, 1);
             while (keff < 1.0125)
             {
