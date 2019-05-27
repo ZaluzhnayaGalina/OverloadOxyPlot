@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OverloadOxyPlot.Model.Interfaces;
 
 namespace OverloadOxyPlot.Model.Implementations
@@ -33,15 +34,14 @@ namespace OverloadOxyPlot.Model.Implementations
             for (int i = 0; i < 1.0 / _burningReactor.DeltaT; i++)
             {
                 var prev = _burningReactor.Protocol.Last();
-                int nArrayCount = _burningReactor.NArray.Count;
-                _burningReactor.NArray = new List<double> {0};
-                for (int j = 1; j < nArrayCount; j++)
-                {
-                    var n = prev[j] + _burningReactor.DeltaT *
-                            ((_burningReactor.W0 - _burningReactor.B * j * _burningReactor.DeltaE) / _burningReactor.DeltaE * (-prev[j] + prev[j - 1]) + _burningReactor.B * prev[j]);
-                    _burningReactor.NArray.Add(n);
-                }
-
+                int nArrayCount = _burningReactor.NArray.Length;
+                _burningReactor.NArray = new double[nArrayCount];
+                Parallel.For(1, nArrayCount, j =>
+                  {
+                      _burningReactor.NArray[j] = prev[j] + _burningReactor.DeltaT *
+                              ((_burningReactor.W0 - _burningReactor.B * j * _burningReactor.DeltaE) / _burningReactor.DeltaE * (-prev[j] + prev[j - 1]) + _burningReactor.B * prev[j]);
+                  }
+                );
                 _burningReactor.Protocol.Add(_burningReactor.NArray);
             }
         }
@@ -77,7 +77,7 @@ namespace OverloadOxyPlot.Model.Implementations
 
         private void RemoveBurntAssemblies(Assemblies a)
         {
-            for (int k = _burningReactor.NArray.Count - 1; k >= 0; k--)
+            for (int k = _burningReactor.NArray.Length - 1; k >= 0; k--)
             {
                 if (Math.Abs(_burningReactor.NArray[k]) > 0.01)
                 {

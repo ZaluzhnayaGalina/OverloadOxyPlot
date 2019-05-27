@@ -26,7 +26,13 @@ namespace OverloadOxyPlot.Scenario
             for (int i = 0; i < Days; i++)
             {
                 a.Count = Count;
-                a.E1 = _stoppedReactor.NArray.FindIndex(x => x > 0) * _stoppedReactor.DeltaE;
+                int id0;
+                for (id0 = 0; id0 < _stoppedReactor.NArray.Length; id0++)
+                {
+                    if (_stoppedReactor.NArray[id0] > 0)
+                        break;
+                }
+                a.E1 = id0 * _stoppedReactor.DeltaE;
                 a.E2 = a.E1 + DeltaE;
                 var a1 = _stoppedReactor.Remove(a);
                 _reactor.Insert(a1);
@@ -36,7 +42,6 @@ namespace OverloadOxyPlot.Scenario
         }
 
         public IList<IReactor> Reactors { get; set; }
-        public event DaySystemEvent DayPassed;
     }
 }
     

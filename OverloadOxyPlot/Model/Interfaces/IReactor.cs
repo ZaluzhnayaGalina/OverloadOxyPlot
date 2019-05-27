@@ -20,8 +20,8 @@ namespace OverloadOxyPlot.Model.Interfaces
     public class ReactorDayEventArgs : EventArgs
     {
         public double Fuel { get; }
-        public List<double> N { get; }
-        public ReactorDayEventArgs(double fuel, List<double> n)
+        public IEnumerable<double> N { get; }
+        public ReactorDayEventArgs(double fuel, IEnumerable<double> n)
         {
             Fuel = fuel;
             N = new List<double>(n);

@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using MVVMTools;
-using OverloadOxyPlot.Graphics.Implementations;
-using OverloadOxyPlot.Graphics.Interfaces;
 using OverloadOxyPlot.Model;
 using OverloadOxyPlot.Model.Implementations;
 using OverloadOxyPlot.Scenario;
@@ -43,7 +42,7 @@ namespace OverloadOxyPlot.ViewModels
             _reactorSystem.Reactors.Add(reactor);
             
 
-            _scenarioCreator = new ScenarioCreator { Count = 2, DeltaE = 50, Days = 300, ScenarioType = ScenarioTypes.MinToMax};
+            _scenarioCreator = new ScenarioCreator { Count = 2, DeltaE = 50, Days = 800, ScenarioType = ScenarioTypes.Alt};
             ScenarioSettingsCommand = new BaseCommand(ShowScenarioSettings);
             BurnCommand = new BaseCommand(Burn);
             RunCommand = new BaseCommand(RunScenario);
@@ -59,9 +58,10 @@ namespace OverloadOxyPlot.ViewModels
         private void RunScenario(object obj)
         {
             _scenario = _scenarioCreator.CreateScenario(_reactorSystem);
-            Cursor = Cursors.Wait;
-            _scenario.Run();
-            Cursor = Cursors.Arrow;
+            Task.Run(() =>
+            {
+                _scenario.Run();
+            });
 
         }
 

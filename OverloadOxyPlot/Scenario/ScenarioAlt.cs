@@ -26,39 +26,47 @@ namespace OverloadOxyPlot.Scenario
             bool tmp = true;
             for (int i = 0; i < Days; i++)
             {
-                if (_reactor.AssembliesCount + Count < 1670)
+                a.Count = Count;
+                if (tmp)
                 {
-                    a.Count = Count;
-                    if (tmp)
+                    int id0;
+                    for (id0 = 0; id0 < _stoppedReactor.NArray.Length; id0++)
                     {
-                        a.E1 = _stoppedReactor.NArray.FindIndex(x => x > 0) * _stoppedReactor.DeltaE;
-                        a.E2 = a.E1 + DeltaE;
+                        if (_stoppedReactor.NArray[id0] > 0)
+                            break;
                     }
-                    else
-                    {
-                        //for (int k = StoppedReactor.NArray.Count - 1; k >= 0; k--)
-                        //{
-                        //    if (Math.Abs(StoppedReactor.NArray[k]) > 0.01)
-                        //    {
-                        //        a.E2 = k * StoppedReactor.DeltaE;
-                        //        break;
-                        //    }
-                        //}
-                        int id0 = _stoppedReactor.NArray.FindIndex(x => x > 0);
-                        int k = id0 + (_stoppedReactor.NArray.Count - id0) / 2;
+                    a.E1 = id0 * _stoppedReactor.DeltaE;
+                    a.E2 = a.E1 + DeltaE;
+                }
+                else
+                {
+                    //for (int k = StoppedReactor.NArray.Count - 1; k >= 0; k--)
+                    //{
+                    //    if (Math.Abs(StoppedReactor.NArray[k]) > 0.01)
+                    //    {
+                    //        a.E2 = k * StoppedReactor.DeltaE;
+                    //        break;
+                    //    }
+                    //}
+                    int id0;
+                    for (id0=0; id0<_stoppedReactor.NArray.Length;id0++)
+                        {
+                            if (_stoppedReactor.NArray[id0] > 0)
+                                break;
+                        }
+                        int k = id0 + (_stoppedReactor.NArray.Length - id0) / 2;
                         a.E2 = k * _stoppedReactor.DeltaE + DeltaE / 2;
                         a.E1 = a.E2 - DeltaE;
                     }
                     a1 = _stoppedReactor.Remove(a);
 
                     _reactor.Insert(a1);
-                }
+                
                 _reactorSystem.DayPass();
                 tmp = !tmp;
             }
         }
 
         public IList<IReactor> Reactors { get; set; }
-        public event DaySystemEvent DayPassed;
     }
 }

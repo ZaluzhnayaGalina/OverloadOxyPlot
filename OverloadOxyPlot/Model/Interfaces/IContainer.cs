@@ -10,7 +10,7 @@ namespace OverloadOxyPlot.Model.Interfaces
         /// <summary>
         ///  Спектр ТВС
         ///  </summary>
-        List<double> NArray { get; set; }
+        double[] NArray { get; set; }
         /// <summary>
         /// Вставка ТВС
         /// </summary>
@@ -28,7 +28,7 @@ namespace OverloadOxyPlot.Model.Interfaces
         /// 
         double DeltaE { get; set; }
         double DeltaT { get; set; }
-        List<List<double>> Protocol { get; set; }
+        List<double[]> Protocol { get; set; }
         double AssembliesCount { get; }
 
     }   

@@ -85,6 +85,7 @@
     <Compile Include="Scenario\ScenarioAlt.cs" />
     <Compile Include="Scenario\ScenarioCreator.cs" />
     <Compile Include="Scenario\ScenarioMinToMax.cs" />
+    <Compile Include="Scenario\ScenarioRandom.cs" />
     <Compile Include="ViewModels\ReactorSystemViewModel.cs" />
     <Compile Include="Views\ScenarioSettings.xaml.cs">
       <DependentUpon>ScenarioSettings.xaml</DependentUpon>

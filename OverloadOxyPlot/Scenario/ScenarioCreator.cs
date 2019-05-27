@@ -56,6 +56,8 @@ namespace OverloadOxyPlot.Scenario
                 return new ScenarioAlt(reactorSystem) {Count = Count, Days = Days, DeltaE = DeltaE};
             if(ScenarioType==ScenarioTypes.MinToMax)
                 return new ScenarioMinToMax(reactorSystem) { Count = Count, Days = Days, DeltaE = DeltaE };
+            if (ScenarioType == ScenarioTypes.Random)
+                return new ScenarioRandom(reactorSystem) { Count = Count, Days = Days, DeltaE = DeltaE };
             return null;
         }
         public event PropertyChangedEventHandler PropertyChanged;

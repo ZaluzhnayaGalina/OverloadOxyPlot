@@ -16,24 +16,39 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" Grid.Row="0">
-            <StackPanel Orientation="Vertical" Margin="10">
-                <TextBlock Text="Диапазон энерговыработок извлекаемых ТВС"/>
-                <TextBlock Text=" Число извлекаемых ТВС в сутки"/>
-                <TextBlock Text="Продолжительность"/>
-                <TextBlock Text="Направление"/>
-            </StackPanel>
-            <StackPanel Orientation="Vertical" Margin="10">
-                <TextBox Text="{Binding Path=DeltaE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Text="{Binding Path=Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Text="{Binding Path=Days, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <ComboBox ItemsSource="{Binding Source={StaticResource TypesFromEnum}}"
-                          SelectedItem="{Binding ScenarioType}"></ComboBox>
-            </StackPanel>
-        </StackPanel>
-       
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TextBlock
+            Grid.Row="0" Grid.Column="0"
+            Text="Диапазон энерговыработок извлекаемых ТВС" TextWrapping="Wrap"/>
+        <TextBlock
+            Grid.Row="1" Grid.Column="0"
+            Text=" Число извлекаемых ТВС в сутки"/>
+        <TextBlock
+            Grid.Row="2" Grid.Column="0"
+            Text="Продолжительность"/>
+        <TextBlock
+            Grid.Row="3" Grid.Column="0"
+            Text="Направление"/>
+        <TextBox
+            Grid.Row="0" Grid.Column="1"
+            Text="{Binding Path=DeltaE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox
+            Grid.Row="1" Grid.Column="1"
+            Text="{Binding Path=Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox
+            Grid.Row="2" Grid.Column="1"
+            Text="{Binding Path=Days, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <ComboBox
+            Grid.Row="3" Grid.Column="1"
+            ItemsSource="{Binding Source={StaticResource TypesFromEnum}}"
+            SelectedItem="{Binding ScenarioType}"/>
     </Grid>
 </Window>

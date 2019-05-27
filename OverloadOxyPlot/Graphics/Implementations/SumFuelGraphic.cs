@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows;
 using OverloadOxyPlot.Graphics.Interfaces;
 using OverloadOxyPlot.Model.Interfaces;
 using OxyPlot;
@@ -17,7 +18,8 @@ namespace OverloadOxyPlot.Graphics.Implementations
             if (ireactor is null)
                 return;
             _sumFuel += ireactor.Fuel;
-            Points.Add(new DataPoint(ireactor.T, _sumFuel));
+            Application.Current.Dispatcher.Invoke(() => 
+            Points.Add(new DataPoint(ireactor.T, _sumFuel)));
         }
 
         public override string ToString()

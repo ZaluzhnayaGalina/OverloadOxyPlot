@@ -2,6 +2,7 @@
 using OverloadOxyPlot.Graphics.Implementations;
 using OverloadOxyPlot.Graphics.Interfaces;
 using OverloadOxyPlot.Model;
+using OverloadOxyPlot.Model.Implementations;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -23,7 +24,8 @@ namespace OverloadOxyPlot.ViewModels
                 var reactorViewModel = new ReactorViewModel(reactor,
                     assemblies => AssembliesList.Add(assemblies), assemblies => AssembliesList.Remove(Assemblies));
                 reactorViewModel.ReactorName = "Реактор " + i.ToString("D");
-                reactorViewModel.AddGraphic(new FuelGraphic());
+                if (reactor.BurnBehavior is BurnBehavior)
+                    reactorViewModel.AddGraphic(new FuelGraphic());
                 reactorViewModel.AddGraphic(new SumFuelGraphic());
                 i++;
                 ReactorViewModels.Add(reactorViewModel);

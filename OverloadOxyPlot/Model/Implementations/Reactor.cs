@@ -16,11 +16,11 @@ namespace OverloadOxyPlot.Model.Implementations
         public double B { get; set; }
         public double Fuel { get; set; }
         public double AssembliesCount => NArray.Sum() * DeltaE;
-        public List<double> NArray { get; set; }
+        public double[] NArray { get; set; }
         public double DeltaE { get; set; }
 
         public double DeltaT { get; set; }
-        public List<List<double>> Protocol { get; set; }
+        public List<double[]> Protocol { get; set; }
 
         public double Mef
         {
@@ -89,19 +89,19 @@ namespace OverloadOxyPlot.Model.Implementations
         {
             DeltaE = 1;
             DeltaT = 0.1;
-            Protocol = new List<List<double>>();
-            NArray = new List<double>();
+            Protocol = new List<double[]>();
+            
             //AssembliesCount = 1600;
             Em = 2800;
             W0 = 3;
             double N = 1660.0;
             const double wMin = 1.5;
             B = (W0 - wMin) / Em;
-
             Fuel = B * N / Math.Log(W0 / wMin);
+            NArray = new double[(int)Math.Ceiling(Em / DeltaE)];
             for (int i = 0; i < Em / DeltaE; i++)
             {
-                NArray.Add(Fuel / (W0 - B * DeltaE * i));
+                NArray[i]=Fuel / (W0 - B * DeltaE * i);
             }
             Protocol.Add(NArray);
         }

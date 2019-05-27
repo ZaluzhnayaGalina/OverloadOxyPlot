@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows;
 using OverloadOxyPlot.Graphics.Interfaces;
 using OverloadOxyPlot.Model.Interfaces;
 using OxyPlot;
@@ -15,9 +16,12 @@ namespace OverloadOxyPlot.Graphics.Implementations
             var ireactor = reactor as IReactor;
             if (ireactor is null)
                 return;
-            Points.Clear();
-            for (int j = 0; j < ireactor.NArray.Count; j++)
-                Points.Add(new DataPoint(j * ireactor.DeltaE, ireactor.NArray[j]));
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Points.Clear();
+                for (int j = 0; j < ireactor.NArray.Length; j++)
+                    Points.Add(new DataPoint(j * ireactor.DeltaE, ireactor.NArray[j]));
+            });
         }
 
         public override string ToString()
